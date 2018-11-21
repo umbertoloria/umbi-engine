@@ -4,6 +4,11 @@ public class Vec2 implements Cloneable {
 
 	private double x, y;
 
+	public Vec2(double v) {
+		this.x = v;
+		this.y = v;
+	}
+
 	public Vec2(double x, double y) {
 		this.x = x;
 		this.y = y;

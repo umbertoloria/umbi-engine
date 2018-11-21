@@ -26,11 +26,11 @@ public abstract class LWJGLWindow {
 		this.height = height;
 		this.title = title;
 		this.camera = camera;
+		init();
 	}
 
 	public void run() {
 
-		init();
 		loop();
 
 		// Free the window callbacks and destroy the window
@@ -98,15 +98,16 @@ public abstract class LWJGLWindow {
 
 		// Make the window visible
 		glfwShowWindow(window);
-	}
 
-	private void loop() {
 		// This line is critical for LWJGL's interoperation with GLFW's
 		// OpenGL context, or any context that is managed externally.
 		// LWJGL detects the context that is current in the current thread,
 		// creates the GLCapabilities instance and makes the OpenGL
 		// bindings available for use.
 		GL.createCapabilities();
+	}
+
+	private void loop() {
 
 		// Set the clear color
 		glClearColor(1f, 1f, 1f, 1f);
