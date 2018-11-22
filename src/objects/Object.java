@@ -2,18 +2,23 @@ package objects;
 
 import buffers.VAO;
 import metrics.Vec2;
+import shaders.Shader;
 import structures.Entity;
 import utils.Color;
-import utils.Draw;
 
 public class Object extends Entity {
 
 	private VAO vao;
+	private Shader shader;
 	private Vec2 size;
 	private Color color;
 
 	public void setVao(VAO vao) {
 		this.vao = vao;
+	}
+
+	public void setShader(Shader shader) {
+		this.shader = shader;
 	}
 
 	public void setColor(Color color) {
@@ -25,16 +30,19 @@ public class Object extends Entity {
 	}
 
 	public void render() {
-		Draw.pushMatrix();
+		/*Draw.pushMatrix();
 		Draw.translate(getPos());
 		Draw.scale(size);
-		Draw.color(color);
+		Draw.color(color);*/
+		shader.bind();
 		vao.render();
-		Draw.popMatrix();
+		shader.unbind();
+		/*Draw.popMatrix();*/
 	}
 
 	public void delete() {
 		vao.delete();
+		shader.delete();
 	}
 
 }

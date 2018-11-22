@@ -1,6 +1,7 @@
 package objects;
 
 import buffers.VAO;
+import shaders.ShadersManager;
 import utils.Color;
 
 import java.util.ArrayList;
@@ -21,6 +22,8 @@ public class ObjectLoader {
 		} catch (IllegalArgumentException e) {
 			throw new RuntimeException("Problem");
 		}
+		// shader
+		res.setShader(ShadersManager.get(sc.nextLine()));
 		// vertex
 		if (!sc.nextLine().equals("vertices")) {
 			throw new RuntimeException("Problem");
