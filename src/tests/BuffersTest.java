@@ -15,6 +15,8 @@ public class BuffersTest {
 
 		gw.add(object);
 		gw.run();
+
+		object.delete();
 	}
 
 }

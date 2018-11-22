@@ -33,4 +33,8 @@ public class Object extends Entity {
 		Draw.popMatrix();
 	}
 
+	public void delete() {
+		vao.delete();
+	}
+
 }
