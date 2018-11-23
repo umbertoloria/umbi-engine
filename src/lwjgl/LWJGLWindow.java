@@ -4,7 +4,9 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
-import projections.Camera;
+import structures.Inputable;
+import structures.Renderable;
+import structures.Updatable;
 
 import java.nio.IntBuffer;
 
@@ -14,18 +16,16 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
-public abstract class LWJGLWindow {
+public abstract class LWJGLWindow implements Renderable, Updatable, Inputable {
 
 	private long window;
 	private int width, height;
 	private String title;
-	private Camera camera;
 
-	public LWJGLWindow(int width, int height, String title, Camera camera) {
+	public LWJGLWindow(int width, int height, String title) {
 		this.width = width;
 		this.height = height;
 		this.title = title;
-		this.camera = camera;
 		init();
 	}
 
@@ -67,6 +67,12 @@ public abstract class LWJGLWindow {
 		glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
 			if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
 				glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
+			else
+				keyboardInput(key, action);
+		});
+
+		glfwSetCursorPosCallback(window, (window, xpos, ypos) -> {
+			mouseInput(xpos, ypos);
 		});
 
 		// Get the thread stack and push a new frame
@@ -115,17 +121,13 @@ public abstract class LWJGLWindow {
 		// Run the rendering loop until the user has attempted to close
 		// the window or has pressed the ESCAPE key.
 		while (!glfwWindowShouldClose(window) && glfwGetTime() <= 1) {
-			//renderAll();
-			//updateAll();
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}
 		lastTime = getDelta();
 		while (!glfwWindowShouldClose(window)) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			camera.enable();
 			render();
-			camera.disable();
 			update(getDelta());
 			glfwSwapBuffers(window);
 			glfwPollEvents();
@@ -140,9 +142,5 @@ public abstract class LWJGLWindow {
 		lastTime = currentTime;
 		return delta;
 	}
-
-	public abstract void render();
-
-	public abstract void update(double delta);
 
 }

@@ -1,38 +1,44 @@
 package shaders;
 
-import org.lwjgl.BufferUtils;
+import metrics.Matrix;
 
-import java.nio.FloatBuffer;
 import java.util.Scanner;
 
-import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL40.*;
 
 public abstract class Shader {
 
 	private int program, vertexShader, fragmentShader;
 
-	//private static FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
-
 	public Shader(String filename) {
-		String[] src = getSources(filename + ".glsl");
-		vertexShader = loadShader(src[0], GL_VERTEX_SHADER);
-		fragmentShader = loadShader(src[1], GL_FRAGMENT_SHADER);
 		program = glCreateProgram();
+
+		String[] src = getSources(filename + ".glsl");
+		vertexShader = createShader(src[0], GL_VERTEX_SHADER);
+		fragmentShader = createShader(src[1], GL_FRAGMENT_SHADER);
+
 		glAttachShader(program, vertexShader);
 		glAttachShader(program, fragmentShader);
+
 		bindAttributes();
+
 		glLinkProgram(program);
+		if (glGetProgrami(program, GL_LINK_STATUS) != 1) {
+			System.out.println("Unable to link the program.");
+			System.exit(1);
+		}
 		glValidateProgram(program);
-		getAllUniformLocations();
+		if (glGetProgrami(program, GL_VALIDATE_STATUS) != 1) {
+			System.out.println("Unable to validate the program.");
+			System.exit(1);
+		}
 	}
+
+	protected abstract void bindAttributes();
 
 	void bindAttribute(int attribute, String varName) {
 		glBindAttribLocation(program, attribute, varName);
 	}
-
-	protected abstract void getAllUniformLocations();
-
-	protected abstract void bindAttributes();
 
 	public void bind() {
 		glUseProgram(program);
@@ -51,37 +57,60 @@ public abstract class Shader {
 		glDeleteProgram(program);
 	}
 
-	/*protected int getUniformLocation(String uniformName) {
-		return glGetUniformLocation(program, uniformName);
+	protected int loadUniform(String name) {
+		return glGetUniformLocation(program, name);
 	}
 
-	/*protected void loadFloat(int location, float value) {
-		glUniform1f(location, value);
+	/*
+		protected void loadFloat(int location, float value) {
+			glUniform1f(location, value);
+		}
+
+		protected void loadVector(int location, Vec3 vec) {
+			glUniform3d(location, vec.x(), vec.y(), vec.z());
+		}
+
+		protected void loadFloats(int location, float a, float b, float c) {
+			glUniform3d(location, a, b, c);
+		}
+
+		protected void loadVector4f(int location, float a, float b, float c, float d) {
+			glUniform4f(location, a, b, c, d);
+		}
+
+		protected void loadMatrix(int location, Matrix4f matrix) {
+			/*matrix.store(matrixBuffer);
+			matrixBuffer.flip();*
+			float[] data = new float[]{
+					1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+			};
+			FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
+			matrixBuffer.put(data);
+			matrixBuffer.flip();
+			System.out.println("put");
+			glUniformMatrix4fv(location, false, matrixBuffer);
+		}
+	*/
+
+	public void setInt(int uniform, int value) {
+		glUniform1i(uniform, value);
 	}
 
-	protected void loadVector(int location, Vec2 vec) {
-		glUniform3d(location, vec.x(), vec.y(), 0);
+	protected void setFloat(int uniform, float value) {
+		glUniform1f(uniform, value);
 	}
 
-	/*protected void loadMatrix(int location, Matrix4f matrix) {
-		/*matrix.storeOn(matrixBuffer);
-		FloatBuffer b = BufferUtils.createFloatBuffer(16);
-		b.put(new float[]{0, 0, 0, 1});
-		b.put(new float[]{0, 0, 1, 0});
-		b.put(new float[]{0, 1, 0, 0});
-		b.put(new float[]{1, 0, 0, 0});
-		b.flip();*
-		glUniformMatrix4fv(location, false, matrix.toFloatBuffer());
-	}*/
+	protected void setMatrix(int uniform, Matrix m) {
+		glUniformMatrix4fv(uniform, false, m.toFloatBuffer());
+	}
 
-	private static int loadShader(String source, int type) {
+	private static int createShader(String source, int type) {
 		int shader = glCreateShader(type);
 		glShaderSource(shader, source);
 		glCompileShader(shader);
 		if (glGetShaderi(shader, GL_COMPILE_STATUS) == GL_FALSE) {
 			System.out.println(glGetShaderInfoLog(shader, 500));
-			System.err.println("Could not compile shader!");
-			System.exit(-1);
+			System.exit(1);
 		}
 		return shader;
 	}

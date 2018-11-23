@@ -1,26 +1,35 @@
 package shaders;
 
+import metrics.Matrix;
+import inputs.Camera;
+
 public class StaticShader extends Shader {
 
-	private int location_transformationMatrix;
+	private int transformationMatrix_location;
+	private int projectionMatrix_location;
+	private int viewMatrix_location;
 
 	public StaticShader(String filename) {
 		super(filename);
-		//Matrix m = Maths.createTransformationMatrix(new Vec3(-10, -10, -10), 0, 0, 0, 500);
-		//Matrix4f m = Matrix4f.orthographic(-1, 1, 1, -1, 0, 0);
-		//loadTransformationMatrix(m);
+		transformationMatrix_location = loadUniform("transformationMatrix");
+		projectionMatrix_location = loadUniform("projectionMatrix");
+		viewMatrix_location = loadUniform("viewMatrix");
 	}
 
 	protected void bindAttributes() {
 		super.bindAttribute(0, "position");
 	}
 
-	protected void getAllUniformLocations() {
-		//location_transformationMatrix = super.getUniformLocation("transformationMatrix");
+	public void loadTransformationMatrix(Matrix matrix) {
+		super.setMatrix(transformationMatrix_location, matrix);
 	}
 
-	/*public void loadTransformationMatrix(Matrix4f matrix) {
-		super.loadMatrix(location_transformationMatrix, matrix);
-	}*/
+	public void loadProjectionMatrix(Camera camera) {
+		super.setMatrix(projectionMatrix_location, camera.getProjectionMatrix());
+	}
+
+	public void loadViewMatrix(Camera camera) {
+		super.setMatrix(viewMatrix_location, Matrix.createViewMatrix(camera));
+	}
 
 }

@@ -1,8 +1,8 @@
 package windows;
 
 import lwjgl.LWJGLWindow;
-import projections.Camera;
 import structures.Entity;
+import structures.Inputable;
 import structures.Renderable;
 import structures.Updatable;
 
@@ -10,14 +10,15 @@ import java.util.ArrayList;
 
 public class GameWindow extends LWJGLWindow {
 
-	public static final int WIDTH = 2800;
 	public static final double PROPS = 16 / 10d;
-	public static final int HEIGHT = (int) (WIDTH / PROPS);
+	private static final int WIDTH = 2800;
+	private static final int HEIGHT = (int) (WIDTH / PROPS);
 	private ArrayList<Updatable> updatables = new ArrayList<>();
 	private ArrayList<Renderable> renderables = new ArrayList<>();
+	private ArrayList<Inputable> inputables = new ArrayList<>();
 
 	public GameWindow(String title) {
-		super(WIDTH, HEIGHT, title, new Camera(250));
+		super(WIDTH, HEIGHT, title);
 	}
 
 	public void add(Entity e) {
@@ -25,12 +26,8 @@ public class GameWindow extends LWJGLWindow {
 		renderables.add(e);
 	}
 
-	public void add(Updatable u) {
-		updatables.add(u);
-	}
-
-	public void add(Renderable r) {
-		renderables.add(r);
+	public void add(Inputable i) {
+		inputables.add(i);
 	}
 
 	public void render() {
@@ -45,4 +42,25 @@ public class GameWindow extends LWJGLWindow {
 		}
 	}
 
+	public void keyboardInput(int key, int action) {
+		for (Inputable inputable : inputables) {
+			inputable.keyboardInput(key, action);
+		}
+	}
+
+	private double lx = -1, ly = -1;
+
+	public void mouseInput(double xpos, double ypos) {
+		if (lx == -1) {
+			lx = xpos;
+		}
+		if (ly == -1) {
+			ly = ypos;
+		}
+		for (Inputable inputable : inputables) {
+			inputable.mouseInput(xpos - lx, ypos - ly);
+		}
+		lx = xpos;
+		ly = ypos;
+	}
 }

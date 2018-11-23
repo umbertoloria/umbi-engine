@@ -1,9 +1,14 @@
 #version 150
+
 in vec3 position;
 out vec3 color;
-void main(void) {
-    gl_Position = vec4(position, 1.0);
-    color = vec3(position.x + 0.5, 0.0, position.y + 0.5);
+uniform mat4 transformationMatrix;
+uniform mat4 projectionMatrix;
+uniform mat4 viewMatrix;
+
+void main() {
+    gl_Position = vec4(position, 1) * transformationMatrix * projectionMatrix * viewMatrix;
+    color = vec3(1,0,0);
 }
 
 
@@ -11,8 +16,9 @@ void main(void) {
 
 
 #version 150 core
+
 in vec3 color;
-out vec4 out_Color;
-void main(void) {
-    out_Color = vec4(color, 1.0);
+
+void main() {
+    gl_FragColor = vec4(color, 1);
 }

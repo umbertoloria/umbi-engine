@@ -1,24 +1,34 @@
 package objects;
 
 import buffers.VAO;
+import metrics.Matrix;
 import metrics.Vec2;
-import shaders.Shader;
+import inputs.Camera;
+import shaders.StaticShader;
 import structures.Entity;
 import utils.Color;
 
 public class Object extends Entity {
 
 	private VAO vao;
-	private Shader shader;
+	private StaticShader shader;
 	private Vec2 size;
 	private Color color;
+	private Camera camera;
 
 	public void setVao(VAO vao) {
 		this.vao = vao;
 	}
 
-	public void setShader(Shader shader) {
+	public void setShader(StaticShader shader) {
 		this.shader = shader;
+	}
+
+	public void setCamera(Camera camera) {
+		this.camera = camera;
+		shader.bind();
+		shader.loadProjectionMatrix(camera);
+		shader.unbind();
 	}
 
 	public void setColor(Color color) {
@@ -30,14 +40,13 @@ public class Object extends Entity {
 	}
 
 	public void render() {
-		/*Draw.pushMatrix();
-		Draw.translate(getPos());
-		Draw.scale(size);
-		Draw.color(color);*/
 		shader.bind();
+		Matrix tm = Matrix.createTransformationMatrix(getPos().x(), getPos().z(), getPos().y(),
+				0, 0, 0, 1);
+		shader.loadTransformationMatrix(tm);
+		shader.loadViewMatrix(camera);
 		vao.render();
 		shader.unbind();
-		/*Draw.popMatrix();*/
 	}
 
 	public void delete() {

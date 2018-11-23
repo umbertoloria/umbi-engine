@@ -1,21 +1,21 @@
 package structures;
 
-import metrics.Vec2;
+import metrics.Vec3;
 
 public abstract class Entity implements Renderable, Updatable {
 
-	private Vec2 pos;
+	private Vec3 pos;
 	private double speed, acceleration, direction, radius;
 
-	public void setOrigin(double x, double y) {
-		pos = new Vec2(x, y);
+	public void setOrigin(double x, double y, double z) {
+		pos = new Vec3(x, y, z);
 	}
 
 	public void setDirection(double direction) {
 		this.direction = direction;
 	}
 
-	public Vec2 getPos() {
+	public Vec3 getPos() {
 		return pos;
 	}
 
