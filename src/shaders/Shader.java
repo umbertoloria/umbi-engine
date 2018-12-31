@@ -1,143 +1,97 @@
 package shaders;
 
-import metrics.Matrix;
+import maths.Mat;
+import graphics.Color;
 
-import java.util.Scanner;
+import java.util.HashMap;
+import java.util.Map;
 
-import static org.lwjgl.opengl.GL40.*;
+import static org.lwjgl.opengl.GL20.*;
 
-public abstract class Shader {
+public class Shader {
 
-	private int program, vertexShader, fragmentShader;
+	public static Shader basic_shader;
 
-	public Shader(String filename) {
-		program = glCreateProgram();
+	public static void loadAll() {
+		basic_shader = new Shader("shade.frag");
+	}
 
-		String[] src = getSources(filename + ".glsl");
-		vertexShader = createShader(src[0], GL_VERTEX_SHADER);
-		fragmentShader = createShader(src[1], GL_FRAGMENT_SHADER);
+	public static final int VERTEX_ATTRIB = 0;
+	// public static final int TCOORD_ATTRIB = 1;
 
-		glAttachShader(program, vertexShader);
-		glAttachShader(program, fragmentShader);
+	private boolean enabled = false;
 
-		bindAttributes();
+	private int ID;
 
-		glLinkProgram(program);
-		if (glGetProgrami(program, GL_LINK_STATUS) != 1) {
-			System.out.println("Unable to link the program.");
-			System.exit(1);
+	private Map<String, Integer> locationCache = new HashMap<>();
+
+	private Shader(String shader) {
+		ID = ShaderUtils.load(shader);
+	}
+
+	private int getUniform(String name) {
+		if (locationCache.containsKey(name)) {
+			return locationCache.get(name);
 		}
-		glValidateProgram(program);
-		if (glGetProgrami(program, GL_VALIDATE_STATUS) != 1) {
-			System.out.println("Unable to validate the program.");
-			System.exit(1);
+		int result = glGetUniformLocation(ID, name);
+		if (result == -1) {
+			System.err.println("Could not find uniform variable '" + name + "'!");
+		} else {
+			locationCache.put(name, result);
 		}
+		return result;
 	}
 
-	protected abstract void bindAttributes();
-
-	void bindAttribute(int attribute, String varName) {
-		glBindAttribLocation(program, attribute, varName);
+	/*public void setUniform1i(String name, int value) {
+		if (!enabled) {
+			enable();
+		}
+		glUniform1i(getUniform(name), value);
 	}
 
-	public void bind() {
-		glUseProgram(program);
+	public void setUniform1f(String name, float value) {
+		if (!enabled) {
+			enable();
+		}
+		glUniform1f(getUniform(name), value);
 	}
 
-	public void unbind() {
+	public void setUniform2f(String name, float x, float y) {
+		if (!enabled) {
+			enable();
+		}
+		glUniform2f(getUniform(name), x, y);
+	}
+
+	public void setUniform3f(String name, float x, float y, float z) {
+		if (!enabled) {
+			enable();
+		}
+		glUniform3f(getUniform(name), x, y, z);
+	}*/
+
+	public void setUniformColor(String name, Color color) {
+		if (!enabled) {
+			enable();
+		}
+		glUniform4f(getUniform(name), color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+	}
+
+	public void setUniformMat4f(String name, Mat matrix) {
+		if (!enabled) {
+			enable();
+		}
+		glUniformMatrix4fv(getUniform(name), false, matrix.toFloatBuffer());
+	}
+
+	public void enable() {
+		glUseProgram(ID);
+		enabled = true;
+	}
+
+	public void disable() {
 		glUseProgram(0);
-	}
-
-	public void delete() {
-		unbind();
-		glDetachShader(program, vertexShader);
-		glDetachShader(program, fragmentShader);
-		glDeleteShader(vertexShader);
-		glDeleteShader(fragmentShader);
-		glDeleteProgram(program);
-	}
-
-	protected int loadUniform(String name) {
-		return glGetUniformLocation(program, name);
-	}
-
-	/*
-		protected void loadFloat(int location, float value) {
-			glUniform1f(location, value);
-		}
-
-		protected void loadVector(int location, Vec3 vec) {
-			glUniform3d(location, vec.x(), vec.y(), vec.z());
-		}
-
-		protected void loadFloats(int location, float a, float b, float c) {
-			glUniform3d(location, a, b, c);
-		}
-
-		protected void loadVector4f(int location, float a, float b, float c, float d) {
-			glUniform4f(location, a, b, c, d);
-		}
-
-		protected void loadMatrix(int location, Matrix4f matrix) {
-			/*matrix.store(matrixBuffer);
-			matrixBuffer.flip();*
-			float[] data = new float[]{
-					1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-			};
-			FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
-			matrixBuffer.put(data);
-			matrixBuffer.flip();
-			System.out.println("put");
-			glUniformMatrix4fv(location, false, matrixBuffer);
-		}
-	*/
-
-	public void setInt(int uniform, int value) {
-		glUniform1i(uniform, value);
-	}
-
-	protected void setFloat(int uniform, float value) {
-		glUniform1f(uniform, value);
-	}
-
-	protected void setMatrix(int uniform, Matrix m) {
-		glUniformMatrix4fv(uniform, false, m.toFloatBuffer());
-	}
-
-	private static int createShader(String source, int type) {
-		int shader = glCreateShader(type);
-		glShaderSource(shader, source);
-		glCompileShader(shader);
-		if (glGetShaderi(shader, GL_COMPILE_STATUS) == GL_FALSE) {
-			System.out.println(glGetShaderInfoLog(shader, 500));
-			System.exit(1);
-		}
-		return shader;
-	}
-
-	private static String[] getSources(String filename) {
-		String[] sources = new String[2];
-		StringBuilder src = new StringBuilder();
-		Scanner sc = new Scanner(Shader.class.getResourceAsStream(filename));
-		String line;
-
-
-		while (sc.hasNextLine()) {
-			line = sc.nextLine();
-			if (line.equalsIgnoreCase("// ---___---___--- //")) {
-				break;
-			}
-			src.append(line);
-			src.append("\n");
-		}
-		sources[0] = src.toString();
-		src.delete(0, src.length());
-		while (sc.hasNextLine()) {
-			src.append(sc.nextLine());
-			src.append("\n");
-		}
-		sources[1] = src.toString();
-		return sources;
+		enabled = false;
 	}
 
 }

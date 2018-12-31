@@ -1,14 +1,23 @@
-package utils;
+package graphics;
+
+import java.util.Random;
 
 public class Color {
 
-	public static final Color RED = new Color(255, 0, 0);
-	public static final Color GREEN = new Color(0, 255, 0);
-	public static final Color BLUE = new Color(0, 0, 255);
+	public static final Color RED = new Color(1, 0, 0);
+	public static final Color GREEN = new Color(0, 1, 0);
+	public static final Color BLUE = new Color(0, 0, 1);
 	public static final Color BLACK = new Color(0, 0, 0);
-	public static final Color WHITE = new Color(255, 255, 255);
+	public static final Color WHITE = new Color(1, 1, 1);
 
 	private float red, green, blue, alpha = 1f;
+
+	public Color() {
+		Random r = new Random();
+		this.red = r.nextFloat();
+		this.green = r.nextFloat();
+		this.blue = r.nextFloat();
+	}
 
 	public Color(float red, float green, float blue) {
 		this.red = red;
@@ -16,14 +25,10 @@ public class Color {
 		this.blue = blue;
 	}
 
-	public Color(int red, int green, int blue) {
-		this.red = red / 255f;
-		this.green = green / 255f;
-		this.blue = blue / 255f;
-	}
-
 	public Color(float red, float green, float blue, float alpha) {
-		this(red, green, blue);
+		this.red = red;
+		this.green = green;
+		this.blue = blue;
 		this.alpha = alpha;
 	}
 
@@ -54,6 +59,18 @@ public class Color {
 
 	public float getAlpha() {
 		return alpha;
+	}
+
+	public boolean equals(Object obj) {
+		if (obj == null || getClass() != obj.getClass()) {
+			return false;
+		}
+		Color oth = (Color) obj;
+		return this.red == oth.red && this.green == oth.green && this.blue == oth.blue;
+	}
+
+	public String toString() {
+		return "color: [red:" + red + ", green:" + green + ", blue:" + blue + ", alpha:" + alpha + "]";
 	}
 
 }
