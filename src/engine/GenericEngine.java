@@ -1,52 +1,52 @@
 package engine;
 
-import buffers.Mesh;
-import camera.Camera;
+import engine.buffers.Mesh;
+import engine.inputs.Cursor;
+import engine.inputs.Keyboard;
+import engine.inputs.Mouse;
+import engine.layer.Layer;
+import engine.layer.LayerStack;
+import engine.shaders.Shader;
 import engine.window.Window;
-import inputs.Cursor;
-import inputs.Keyboard;
-import inputs.Mouse;
-import layer.Layer;
-import layer.LayerStack;
-import models.Model;
-import shaders.Shader;
+import graphics.models.Model;
 
 public abstract class GenericEngine implements Runnable {
 
 	public static final float PROPS = 16f / 9;
-	private static final int WIDTH = 2800;
-	private static final int HEIGHT = (int) (WIDTH / PROPS);
+	public static final int WIDTH = 2800;
+	public static final int HEIGHT = (int) (WIDTH / PROPS);
 
 	private Thread th = new Thread(this);
 	private Window window;
-	private Camera camera;
 	private LayerStack layerStack = new LayerStack();
 
 	public void add(Layer layer) {
-		layerStack.pushLayer(layer);
+		layerStack.add(layer);
 	}
 
 	void render() {
 		for (Layer layer : layerStack) {
-			layer.render(camera);
+			layer.render();
 		}
 	}
 
 	void update(float delta, Keyboard k, Cursor c, Mouse m) {
-		camera.update(delta, k, c, m);
+		window.update(k);
 		for (Layer layer : layerStack) {
 			layer.update(delta, k, c, m);
 		}
 	}
 
-	GenericEngine(String title, Camera camera, boolean fullscreen, boolean vsync) {
+	GenericEngine(String title, boolean fullscreen, boolean vsync) {
 		window = new Window(title, WIDTH, HEIGHT, fullscreen, vsync);
-		this.camera = camera;
 	}
 
 	public void play() {
-		// fixme: il fatto del Mac.
-		th.start();
+		if (System.getProperty("os.name").contains("Mac")) {
+			th.run();
+		} else {
+			th.start();
+		}
 	}
 
 	public void run() {

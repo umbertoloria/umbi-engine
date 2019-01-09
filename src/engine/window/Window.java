@@ -1,10 +1,11 @@
 package engine.window;
 
-import inputs.Cursor;
-import inputs.Keyboard;
-import inputs.Mouse;
+import engine.inputs.Cursor;
+import engine.inputs.Keyboard;
+import engine.inputs.Mouse;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
@@ -32,11 +33,12 @@ public class Window {
 		this.height = height;
 		this.fullscreen = fullscreen;
 		this.vsync = vsync;
-		this.keyboard = new Keyboard(this);
-		this.mouse = new Mouse(this);
-		this.cursor = new Cursor(this);
+		this.keyboard = new Keyboard();
+		this.mouse = new Mouse();
+		this.cursor = new Cursor();
 	}
 
+	// Create
 	public void create() {
 		GLFWErrorCallback.createPrint(System.err).set();
 		if (!glfwInit()) {
@@ -47,8 +49,8 @@ public class Window {
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 		// Antialiasing
-		glfwWindowHint(GLFW_STENCIL_BITS, 4);
-		glfwWindowHint(GLFW_SAMPLES, 4);
+		glfwWindowHint(GLFW_STENCIL_BITS, 8);
+		glfwWindowHint(GLFW_SAMPLES, 8);
 		// Compatibilità OSX
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
@@ -87,12 +89,25 @@ public class Window {
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//		glEnable(GL_LIGHT0);
 //		glActiveTexture(GL_TEXTURE1);
 //		glCullFace(GL_BACK);
 //		glEnable(GL_CULL_FACE);
 		glClearColor(.3f, .3f, .3f, 1f);
+
+		glfwSetWindowSizeCallback(window, new GLFWWindowSizeCallback() {
+			public void invoke(long window, int width, int height) {
+				// FIXME: Favorire il resize.
+				glViewport(0, 0, width, height);
+				System.out.println(width);
+				System.out.println(height);
+				System.out.println();
+			}
+		});
+
 	}
 
+	// Loop
 	public boolean running() {
 		return !glfwWindowShouldClose(window);
 	}
@@ -101,15 +116,16 @@ public class Window {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
+	public float getTime() {
+		return (float) glfwGetTime();
+	}
+
 	public void flush() {
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 
-	public float getTime() {
-		return (float) glfwGetTime();
-	}
-
+	// Closure
 	public void close() {
 		glfwSetWindowShouldClose(window, true);
 	}
@@ -120,6 +136,7 @@ public class Window {
 		glfwTerminate();
 	}
 
+	// Inputs
 	public Keyboard getKeyboard() {
 		return keyboard;
 	}
@@ -130,6 +147,12 @@ public class Window {
 
 	public Mouse getMouse() {
 		return mouse;
+	}
+
+	public void update(Keyboard k) {
+		if (k.isKeyDown("ESCAPE")) {
+			close();
+		}
 	}
 
 }
