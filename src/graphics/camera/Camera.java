@@ -25,8 +25,6 @@ public abstract class Camera {
 	}
 
 	public Mat getViewMatrix() {
-//		return Mat.view(-tx, -ty, -tz, rx, -(ry - 90), rz);
-//		return Mat.view(tx, ty, tz, rx, (ry - 90), rz);
 		return Mat.view(tx, ty, tz, rx, ry, 0);
 	}
 

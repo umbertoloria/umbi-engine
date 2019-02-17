@@ -23,21 +23,21 @@ public class IdleCamera extends Camera {
 				!k.isKeyDown("SPACE") && !k.isKeyDown("SHIFT")) {
 			return;
 		}
-		// Pitch
+		// Precessione
 		if (k.isKeyDown("UP")) {
 			rx += delta * ROT_SPEED;
 		}
 		if (k.isKeyDown("DOWN")) {
 			rx -= delta * ROT_SPEED;
 		}
-		// Yaw
+		// Nutazione
 		if (k.isKeyDown("LEFT")) {
 			ry += delta * ROT_SPEED;
 		}
 		if (k.isKeyDown("RIGHT")) {
 			ry -= delta * ROT_SPEED;
 		}
-		// Y-axis
+		// Traslazione ordinate
 		if (k.isKeyDown("SPACE")) {
 			ty += delta * MOV_SPEED;
 		}

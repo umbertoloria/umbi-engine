@@ -4,6 +4,7 @@ import engine.GameEngine;
 import engine.structures.Renderable;
 import graphics.maths.Vec2;
 import graphics.camera.Camera;
+import phisics.steves.Light;
 
 import java.util.ArrayList;
 
@@ -32,13 +33,13 @@ public class View implements Renderable {
 		renderables.add(r);
 	}
 
-	public void render(Camera ignoro) {
+	public void render(Camera ignoroCamera, Light light) {
 		glEnable(GL_SCISSOR_TEST);
 		glScissor((int) start.x, (int) start.y, (int) finish.x, (int) finish.y);
 		glViewport((int) start.x, (int) start.y, width, height);
 		glDisable(GL_SCISSOR_TEST);
 		for (Renderable renderable : renderables) {
-			renderable.render(camera);
+			renderable.render(camera, light);
 		}
 	}
 

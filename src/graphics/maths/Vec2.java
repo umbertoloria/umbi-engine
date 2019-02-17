@@ -28,6 +28,10 @@ public class Vec2 {
 		y = save.y;
 	}
 
+	public boolean equals(Vec2 o) {
+		return x == o.x && y == o.y;
+	}
+
 	public String toString() {
 		return String.format("X: %-3.3f; Y: %-3.3f", x, y);
 	}

@@ -2,6 +2,7 @@ package engine.shaders;
 
 import graphics.maths.Mat;
 import graphics.cosmetics.Color;
+import graphics.maths.Vec3;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,9 +17,8 @@ public class Shader {
 		basic_shader = new Shader("shade.frag");
 	}
 
-	public static final int VERTEX_ATTRIB = 0;
-	// public static final int TCOORD_ATTRIB = 1;
-	public static final int NORMALS_ATTRIB = 2;
+	public static final int POSITION_LOC = 0;
+	public static final int NORMAL_LOC = 2;
 
 	private boolean enabled = false;
 
@@ -50,11 +50,26 @@ public class Shader {
 		glUniform4f(getUniform(name), color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
 	}
 
+	public void setUniformOpaqueColor(String name, Color color) {
+		if (!enabled) {
+			enable();
+		}
+		glUniform3f(getUniform(name), color.getRed(), color.getGreen(), color.getBlue());
+	}
+
 	public void setUniformMat4f(String name, Mat matrix) {
 		if (!enabled) {
 			enable();
 		}
-		glUniformMatrix4fv(getUniform(name), false, matrix.toFloatBuffer());
+//		glUniformMatrix4fv(getUniform(name), false, matrix.toFloatBuffer());
+		glUniformMatrix4fv(getUniform(name), false, matrix.toArray());
+	}
+
+	public void setUniformVec3(String name, Vec3 v) {
+		if (!enabled) {
+			enable();
+		}
+		glUniform3f(getUniform(name), v.x, v.y, v.z);
 	}
 
 	public void enable() {

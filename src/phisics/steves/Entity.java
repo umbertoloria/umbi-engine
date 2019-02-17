@@ -1,12 +1,13 @@
 package phisics.steves;
 
-import engine.buffers.Mesh;
 import engine.inputs.Cursor;
 import engine.inputs.Keyboard;
 import engine.inputs.Mouse;
+import engine.mesh.Mesh;
 import engine.shaders.Shader;
 import engine.structures.Renderable;
 import graphics.camera.Camera;
+import graphics.cosmetics.Color;
 import graphics.maths.Mat;
 import graphics.maths.Vec3;
 import phisics.PuntoMateriale;
@@ -17,22 +18,28 @@ public class Entity extends PuntoMateriale implements Renderable {
 	private Shader shader;
 	Vec3 rotation = new Vec3(0, 0, 0);
 	private Vec3 scale = new Vec3(1, 1, 1);
+	private Color color;
 
-	public Entity(Mesh mesh) {
+	public Entity(Mesh mesh, Color color) {
 		super(0);
 		this.mesh = mesh;
+		this.color = color;
 		this.shader = Shader.basic_shader;
 	}
 
-	public void render(Camera c) {
+	public void render(Camera c, Light light) {
 		if (!c.canRender(this)) {
 			return;
 		}
 		shader.enable();
-		shader.setUniformMat4f("pr_matrix", c.getProjectionMatrix());
-		shader.setUniformMat4f("vw_matrix", c.getViewMatrix());
-		shader.setUniformMat4f("ml_matrix", getModelMatrix());
-//		shader.setUniformColor("cl", color);
+		shader.setUniformMat4f("model", getModelMatrix());
+		shader.setUniformMat4f("view", c.getViewMatrix());
+		shader.setUniformMat4f("projection", c.getProjectionMatrix());
+		shader.setUniformColor("object_color", color);
+		if (light != null) {
+			shader.setUniformVec3("light_position", light.position);
+			shader.setUniformOpaqueColor("light_color", ((Entity) light).color);
+		}
 		mesh.render();
 		shader.disable();
 	}

@@ -1,17 +1,19 @@
 #version 330 core
 
-layout (location = 0) in vec4 in_position;
+layout (location = 0) in vec3 in_position;
 layout (location = 2) in vec3 in_normal;
 
-uniform mat4 pr_matrix;
-uniform mat4 vw_matrix;
-uniform mat4 ml_matrix;
-
 out vec3 normal;
+out vec3 frag_pos;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
 
 void main() {
-    gl_Position = pr_matrix * vw_matrix * ml_matrix * in_position;
-    normal = in_normal; // vec4(pr_matrix * vw_matrix * ml_matrix * vec4(in_normal, 0)).xyz;
+    frag_pos = vec3(model * vec4(in_position, 1.0));
+    normal = mat3(transpose(inverse(model))) * in_normal;
+    gl_Position = projection * view * vec4(frag_pos, 1.0);
 }
 
 // ---___---___--- //
@@ -21,8 +23,32 @@ void main() {
 layout (location = 0) out vec4 color;
 
 in vec3 normal;
+in vec3 frag_pos;
+
+uniform vec3 light_position;
+uniform vec3 view_pos;
+uniform vec3 light_color;
+uniform vec4 object_color;
 
 void main() {
-    //color = cl * clamp(dot(-vec3(0,0,1), normal), 0, 1);
-    color = vec4(normal, 1);
+
+    // ambient
+    float ambientStrength = 0.1;
+    vec3 ambient = ambientStrength * light_color;
+
+    // diffuse
+    vec3 norm = normalize(normal);
+    vec3 lightDir = normalize(light_position - frag_pos);
+    float diff = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = diff * light_color;
+
+    // specular
+    float specularStrength = 0.5;
+    vec3 viewDir = normalize(view_pos - frag_pos);
+    vec3 reflectDir = reflect(-lightDir, norm);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+    vec3 specular = specularStrength * spec * light_color;
+
+    vec3 result = (ambient + diffuse + specular) * object_color.xyz;
+    color = vec4(result, 1.0);
 }

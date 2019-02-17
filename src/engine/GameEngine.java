@@ -1,71 +1,89 @@
 package engine;
 
+import engine.layer.Layer;
+import engine.layer.LayerStack;
+import engine.mesh.Mesh;
+import engine.shaders.Shader;
 import engine.window.Window;
 import engine.inputs.Cursor;
 import engine.inputs.Keyboard;
 import engine.inputs.Mouse;
+import graphics.models.Model;
 
-public class GameEngine extends GenericEngine {
+public class GameEngine {
 
+	public static final float PROPS = 16f / 9;
+	public static final int WIDTH = 2800;
+	public static final int HEIGHT = (int) (WIDTH / PROPS);
 	private static final boolean FULLSCREEN = false;
 	private static final boolean VSYNC = true;
+	private static final boolean SHOW_FPS = true;
 
+	private Window window;
+	private LayerStack layerStack = new LayerStack();
 	private int ups, fps;
 	private float lastFPScheck;
-	private boolean showFps;
 
 	public GameEngine(String title) {
-		super(title, FULLSCREEN, VSYNC);
-		showFps = false;
+		window = new Window(title, WIDTH, HEIGHT, FULLSCREEN, VSYNC);
 	}
 
-	protected void loop(Window window) {
-		// Aspetto un secondo per far assestare il motore
+	public void add(Layer layer) {
+		layerStack.add(layer);
+	}
+
+	public void play() {
+		window.create();
+		Model.loadAll();
+		Mesh.loadAll();
+		Shader.loadAll();
+		layerStack.init();
+		loop(window);
+		window.terminate();
+	}
+
+	private void loop(Window window) {
+		float delta, now, lastTime = 0;
 		while (window.running() && window.getTime() <= 1) {
 			window.flush();
 		}
-		// Comincia il Application Loop
-		basic_loop(window);
-	}
-
-	private void basic_loop(Window window) {
-		float lastTime = 0;
-		float delta;
-		float now;
+		lastFPScheck = window.getTime();
 		while (window.running()) {
-			// Update
 			now = window.getTime();
 			delta = now - lastTime;
 			lastTime = now;
-			updateAll(window, delta);
-			// Render
-			renderAll(window);
+			update(window, delta);
+			render(window);
 		}
 	}
 
-	private void updateAll(Window window, float delta) {
+	private void update(Window window, float delta) {
 		Keyboard k = window.getKeyboard();
-		k.newInput();
 		Cursor c = window.getCursor();
-		c.newInput();
 		Mouse m = window.getMouse();
+		k.newInput();
 		c.newInput();
-		update(delta, k, c, m);
+		m.newInput();
+		window.update(k);
+		for (Layer layer : layerStack) {
+			layer.update(delta, k, c, m);
+		}
 		ups++;
 	}
 
-	private void renderAll(Window window) {
+	private void render(Window window) {
 		window.clear();
-		render();
+		for (Layer layer : layerStack) {
+			layer.render();
+		}
 		window.flush();
 		fps++;
 		if (lastFPScheck + 1 < window.getTime()) {
 			lastFPScheck = window.getTime();
-			if (showFps) {
+			if (SHOW_FPS) {
 				System.out.println(ups + " ups, " + fps + " fps.");
 			}
-			ups = 0;
-			fps = 0;
+			ups = fps = 0;
 		}
 	}
 
@@ -82,11 +100,11 @@ public class GameEngine extends GenericEngine {
 //			delta += (now - lastTime) / ns;
 //			lastTime = now;
 //			if (delta >= 1.0) {
-//				updateAll(window, fakeDeltaTime);
+//				update(window, fakeDeltaTime);
 //				delta--;
 //			}
 //			// Render
-//			renderAll(window);
+//			render(window);
 //		}
 //	}
 //
@@ -101,11 +119,11 @@ public class GameEngine extends GenericEngine {
 //			currentTime = newTime;
 //			while (frameTime > 0.0) {
 //				float deltaTime = Math.min(frameTime, dt);
-//				updateAll(window, deltaTime);
+//				update(window, deltaTime);
 //				frameTime -= deltaTime;
 //			}
 //			// Render
-//			renderAll(window);
+//			render(window);
 //		}
 //	}
 //
@@ -122,11 +140,11 @@ public class GameEngine extends GenericEngine {
 //			currentTime = newTime;
 //			accumulator += frameTime;
 //			while (accumulator >= dt) {
-//				updateAll(window, dt);
+//				update(window, dt);
 //				accumulator -= dt;
 //			}
 //			// Render
-//			renderAll(window);
+//			render(window);
 //		}
 //	}
 

@@ -4,32 +4,32 @@ import java.util.Random;
 
 public class Color {
 
-	public static final Color RED = new Color(1, 0, 0);
-	public static final Color GREEN = new Color(0, 1, 0);
-	public static final Color BLUE = new Color(0, 0, 1);
-	public static final Color BLACK = new Color(0, 0, 0);
-	public static final Color WHITE = new Color(1, 1, 1);
-	public static final Color GRAY = new Color(.5f, .5f, .5f);
+	public static final Color red = new Color(1, 0, 0);
+	public static final Color green = new Color(0, 1, 0);
+	public static final Color blue = new Color(0, 0, 1);
+	public static final Color black = new Color(0, 0, 0);
+	public static final Color white = new Color(1, 1, 1);
+	public static final Color gray = new Color(.5f, .5f, .5f);
 
-	private float red, green, blue, alpha = 1f;
+	private float r, g, b, alpha = 1f;
 
 	public Color() {
 		Random r = new Random();
-		this.red = r.nextFloat();
-		this.green = r.nextFloat();
-		this.blue = r.nextFloat();
+		this.r = r.nextFloat();
+		this.g = r.nextFloat();
+		this.b = r.nextFloat();
 	}
 
-	public Color(float red, float green, float blue) {
-		this.red = red;
-		this.green = green;
-		this.blue = blue;
+	public Color(float r, float g, float b) {
+		this.r = r;
+		this.g = g;
+		this.b = b;
 	}
 
-	public Color(float red, float green, float blue, float alpha) {
-		this.red = red;
-		this.green = green;
-		this.blue = blue;
+	public Color(float r, float g, float b, float alpha) {
+		this.r = r;
+		this.g = g;
+		this.b = b;
 		this.alpha = alpha;
 	}
 
@@ -41,37 +41,29 @@ public class Color {
 			hex = "#" + hex.charAt(1) + hex.charAt(1) + hex.charAt(2) + hex.charAt(2) + hex.charAt(3) + hex.charAt(3);
 		}
 		int i = Integer.decode(hex);
-		this.red = (i >> 16 & 0xFF) / 255f;
-		this.green = (i >> 8 & 0xFF) / 255f;
-		this.blue = (i & 0xFF) / 255f;
+		this.r = (i >> 16 & 0xFF) / 255f;
+		this.g = (i >> 8 & 0xFF) / 255f;
+		this.b = (i & 0xFF) / 255f;
 	}
 
 	public float getRed() {
-		return red;
+		return r;
 	}
 
 	public float getGreen() {
-		return green;
+		return g;
 	}
 
 	public float getBlue() {
-		return blue;
+		return b;
 	}
 
 	public float getAlpha() {
 		return alpha;
 	}
 
-	public boolean equals(Object obj) {
-		if (obj == null || getClass() != obj.getClass()) {
-			return false;
-		}
-		Color oth = (Color) obj;
-		return this.red == oth.red && this.green == oth.green && this.blue == oth.blue;
-	}
-
 	public String toString() {
-		return "color: [red:" + red + ", green:" + green + ", blue:" + blue + ", alpha:" + alpha + "]";
+		return "color: [r:" + r + ", g:" + g + ", b:" + b + ", alpha:" + alpha + "]";
 	}
 
 }

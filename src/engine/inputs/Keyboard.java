@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class Keyboard extends InputIsolator implements GLFWKeyCallbackI {
+public class Keyboard extends InputDispatcher implements GLFWKeyCallbackI {
 
 	private HashMap<String, Integer> keymap = new HashMap<>();
 	private boolean[] keys = new boolean[65536];

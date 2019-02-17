@@ -3,7 +3,7 @@ package engine.inputs;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
 
-public class Mouse extends InputIsolator implements GLFWMouseButtonCallbackI {
+public class Mouse extends InputDispatcher implements GLFWMouseButtonCallbackI {
 
 	private boolean left, right;
 

@@ -1,14 +1,15 @@
 package phisics.steves;
 
-import engine.buffers.Mesh;
+import engine.mesh.LinearMesh;
 import engine.inputs.Cursor;
 import engine.inputs.Keyboard;
 import engine.inputs.Mouse;
+import graphics.cosmetics.Color;
 
 public class Player extends Entity {
 
 	public Player() {
-		super(Mesh.monkey);
+		super(LinearMesh.monkey, Color.blue);
 	}
 
 	public void update(float delta, Keyboard k, Cursor c, Mouse m) {

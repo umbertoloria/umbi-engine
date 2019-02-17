@@ -1,7 +1,5 @@
 package engine.shaders;
 
-import engine.buffers.utils.FileUtils;
-
 import java.util.Scanner;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -10,8 +8,7 @@ import static org.lwjgl.opengl.GL20.*;
 class ShaderUtils {
 
 	static int load(String path) {
-		String shaderSource = FileUtils.loadAsString(Shader.class, path);
-		Scanner s = new Scanner(shaderSource);
+		Scanner s = new Scanner(Shader.class.getResourceAsStream(path));
 		String line;
 
 		StringBuilder vert = new StringBuilder();

@@ -1,105 +1,105 @@
 package graphics.models;
 
-import engine.buffers.utils.FileUtils;
 import graphics.maths.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class Model {
 
 	public static Model cube, sphere, cone, cylinder, monkey;
 
 	public static void loadAll() {
-		cube = new Model("cube.obj");
-		sphere = new Model("sphere.obj");
-		cone = new Model("cone.obj");
-		cylinder = new Model("cylinder.obj");
-		monkey = new Model("monkey.obj");
+		cube = MeshLoader.loadMesh("cube.obj");
+		sphere = MeshLoader.loadMesh("sphere.obj");
+		cone = MeshLoader.loadMesh("cone.obj");
+		cylinder = MeshLoader.loadMesh("cylinder.obj");
+		monkey = MeshLoader.loadMesh("monkey.obj");
 	}
 
-	private float[] verticesArray;
-	private int[] indicesArray;
-	private float[] normalsArray;
+	private Vertex[] vertices;
+	private int[] indices;
 
-	private Model(String file) {
-		// TODO: Textures e Normals
-		Scanner in = new Scanner(FileUtils.loadAsString(Model.class, file));
-
-		ArrayList<Vec3> vertices = new ArrayList<>();
-		//ArrayList<Vec3> cosmetics = new ArrayList<>();
-		ArrayList<Vec3> normals = new ArrayList<>();
-		ArrayList<Integer> indices = new ArrayList<>();
-
-		String line;
-		String[] parts;
-		String[] v1, v2, v3;
-		while (in.hasNextLine()) {
-			line = in.nextLine();
-			parts = line.split(" ");
-			if (line.startsWith("v ")) {
-				float x = Float.parseFloat(parts[1]);
-				float y = Float.parseFloat(parts[2]);
-				float z = Float.parseFloat(parts[3]);
-				vertices.add(new Vec3(x, y, z));
-			}/* else if (line.startsWith("vt ")) {
-				cosmetics.add(Float.parseFloat(parts[1]));
-				cosmetics.add(Float.parseFloat(parts[2]));
-			}*/ else if (line.startsWith("vn ")) {
-				float x = Float.parseFloat(parts[1]);
-				float y = Float.parseFloat(parts[2]);
-				float z = Float.parseFloat(parts[3]);
-				normals.add(new Vec3(x, y, z));
-			} else if (line.startsWith("f ")) {
-				if (normalsArray == null) {
-					normalsArray = new float[vertices.size() * 3];
+	Model(List<Vec3> positions, List<Vec3> normals, List<MeshLoader.OBJIndex> objIndices) {
+		ArrayList<Vertex> verts = new ArrayList<>();
+		ArrayList<Integer> inds = new ArrayList<>();
+		int cursore = 0;
+		for (MeshLoader.OBJIndex objIndex : objIndices) {
+			Vertex app = new Vertex(
+					positions.get(objIndex.getPositionIndex()),
+					normals.get(objIndex.getNormalIndex())
+			);
+			int firstOccurrence = -1;
+			for (int j = 0; j < verts.size(); j++) {
+				if (verts.get(j).equals(app)) {
+					firstOccurrence = j;
 				}
-				v1 = parts[1].split("/");
-				v2 = parts[2].split("/");
-				v3 = parts[3].split("/");
-				processVertex(v1, indices, normals, normalsArray);
-				processVertex(v2, indices, normals, normalsArray);
-				processVertex(v3, indices, normals, normalsArray);
+			}
+			if (firstOccurrence >= 0) {
+				inds.add(firstOccurrence);
+			} else {
+				verts.add(app);
+				inds.add(cursore++);
 			}
 		}
-
-		verticesArray = new float[vertices.size() * 3];
-		indicesArray = new int[indices.size()];
-
-		int vertexPointer = 0;
-		for (Vec3 vertex : vertices) {
-			verticesArray[vertexPointer++] = vertex.x;
-			verticesArray[vertexPointer++] = vertex.y;
-			verticesArray[vertexPointer++] = vertex.z;
-		}
-
-		for (int i = 0; i < indicesArray.length; i++) {
-			indicesArray[i] = indices.get(i);
+		vertices = new Vertex[verts.size()];
+		verts.toArray(vertices);
+		indices = new int[inds.size()];
+		for (int i = 0; i < inds.size(); i++) {
+			indices[i] = inds.get(i);
 		}
 	}
 
-	private void processVertex(String[] vertexData, List<Integer> indices, List<Vec3> normals,
-	                           float[] normalsArray) {
-		int currentVertexPointer = Integer.parseInt(vertexData[0]) - 1;
-		indices.add(currentVertexPointer);
-
-		Vec3 currentNorm = normals.get(Integer.parseInt(vertexData[2]) - 1);
-		normalsArray[currentVertexPointer * 3] = currentNorm.x;
-		normalsArray[currentVertexPointer * 3 + 1] = currentNorm.y;
-		normalsArray[currentVertexPointer * 3 + 2] = currentNorm.z;
+	public int getIndicesCount() {
+		return indices.length;
 	}
 
-	public float[] getVertices() {
-		return verticesArray;
+	public float[] getPositionsArray() {
+		float[] positions = new float[vertices.length * 3];
+		int i = 0;
+		for (Vertex vertex : vertices) {
+			positions[i++] = vertex.getPosition().x;
+			positions[i++] = vertex.getPosition().y;
+			positions[i++] = vertex.getPosition().z;
+		}
+		return positions;
 	}
 
-	public int[] getIndices() {
-		return indicesArray;
+	public float[] getNormalsArray() {
+		float[] normals = new float[vertices.length * 3];
+		int i = 0;
+		for (Vertex vertex : vertices) {
+			normals[i++] = vertex.getNormal().x;
+			normals[i++] = vertex.getNormal().y;
+			normals[i++] = vertex.getNormal().z;
+		}
+		return normals;
 	}
 
-	public float[] getNormals() {
-		return normalsArray;
+	public int[] getIndicesArray() {
+		return indices;
+	}
+
+	public float[] getLinearPositionsArray() {
+		float[] positions = new float[indices.length * 3];
+		int i = 0;
+		for (int index : indices) {
+			positions[i++] = vertices[index].getPosition().x;
+			positions[i++] = vertices[index].getPosition().y;
+			positions[i++] = vertices[index].getPosition().z;
+		}
+		return positions;
+	}
+
+	public float[] getLinearNormalsArray() {
+		float[] normals = new float[indices.length * 3];
+		int i = 0;
+		for (int index : indices) {
+			normals[i++] = vertices[index].getNormal().x;
+			normals[i++] = vertices[index].getNormal().y;
+			normals[i++] = vertices[index].getNormal().z;
+		}
+		return normals;
 	}
 
 }

@@ -3,7 +3,7 @@ package engine.inputs;
 import graphics.maths.Vec2;
 import org.lwjgl.glfw.GLFWCursorPosCallbackI;
 
-public class Cursor extends InputIsolator implements GLFWCursorPosCallbackI {
+public class Cursor extends InputDispatcher implements GLFWCursorPosCallbackI {
 
 	public void invoke(long window, double dx, double dy) {
 		Vec2 now = new Vec2(dx, dy);

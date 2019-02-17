@@ -126,7 +126,7 @@ public class Window {
 	}
 
 	// Closure
-	public void close() {
+	private void close() {
 		glfwSetWindowShouldClose(window, true);
 	}
 

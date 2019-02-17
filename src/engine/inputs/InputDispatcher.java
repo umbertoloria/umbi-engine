@@ -1,6 +1,6 @@
 package engine.inputs;
 
-public class InputIsolator {
+public class InputDispatcher {
 
 	private boolean free = true;
 
