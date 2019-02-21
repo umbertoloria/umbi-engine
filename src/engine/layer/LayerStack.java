@@ -1,17 +1,12 @@
 package engine.layer;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+import engine.events.Event;
 
-public class LayerStack implements Iterable<Layer> {
+import java.util.ArrayList;
+
+public class LayerStack {
 
 	private ArrayList<Layer> layers = new ArrayList<>();
-
-	public void init() {
-		for (Layer layer : layers) {
-			layer.init();
-		}
-	}
 
 	public void add(Layer layer) {
 		layers.add(layer);
@@ -21,8 +16,28 @@ public class LayerStack implements Iterable<Layer> {
 		layers.remove(layer);
 	}
 
-	public Iterator<Layer> iterator() {
-		return layers.iterator();
+	public void init() {
+		for (Layer layer : layers) {
+			layer.onInit();
+		}
+	}
+
+	public void update(float delta) {
+		for (Layer layer : layers) {
+			layer.update(delta);
+		}
+	}
+
+	public void render() {
+		for (Layer layer : layers) {
+			layer.render();
+		}
+	}
+
+	public void pushEvent(Event event) {
+		for (int i = layers.size() - 1; i >= 0; i--) {
+			layers.get(i).onEvent(event);
+		}
 	}
 
 }

@@ -1,9 +1,7 @@
 package phisics.steves;
 
+import engine.events.*;
 import engine.mesh.LinearMesh;
-import engine.inputs.Cursor;
-import engine.inputs.Keyboard;
-import engine.inputs.Mouse;
 import graphics.cosmetics.Color;
 
 public class Player extends Entity {
@@ -12,78 +10,97 @@ public class Player extends Entity {
 		super(LinearMesh.monkey, Color.blue);
 	}
 
-	public void update(float delta, Keyboard k, Cursor c, Mouse m) {
-		if (k.canTakeInput()) {
-			k.inputTaken(keyboardInput(k, delta));
-		}
-		if (c.canTakeInput()) {
-			c.inputTaken(cursorInput(c, delta));
-		}
+	public void onEvent(Event event) {
+		EventDispatcher ed = new EventDispatcher(event);
+		ed.dispatch(Event.Type.KEY_PRESSED, (e) -> keyPressed((KeyPressed) e));
+		ed.dispatch(Event.Type.KEY_RELEASED, (e) -> keyReleased((KeyReleased) e));
+		ed.dispatch(Event.Type.CURSOR_MOVED, (e) -> cursorMoved((CursorMoved) e));
 	}
 
-	private boolean cursorInput(Cursor c, float delta) {
-		float xmotion = c.getXMotion();
-		float ymotion = c.getYMotion();
-		if (xmotion == 0 && ymotion == 0) {
-			return false;
+	private boolean wBtn, aBtn, sBtn, dBtn;
+	private float xmotion, ymotion;
+
+	private boolean keyPressed(KeyPressed e) {
+		if (e.getKey().equals("W")) {
+			wBtn = true;
 		}
+		if (e.getKey().equals("A")) {
+			aBtn = true;
+		}
+		if (e.getKey().equals("S")) {
+			sBtn = true;
+		}
+		if (e.getKey().equals("D")) {
+			dBtn = true;
+		}
+		return e.getKey().equals("W") || e.getKey().equals("A") || e.getKey().equals("S") || e.getKey().equals("D");
+	}
+
+	private boolean keyReleased(KeyReleased e) {
+		if (e.getKey().equals("W")) {
+			wBtn = false;
+		}
+		if (e.getKey().equals("A")) {
+			aBtn = false;
+		}
+		if (e.getKey().equals("S")) {
+			sBtn = false;
+		}
+		if (e.getKey().equals("D")) {
+			dBtn = false;
+		}
+		return e.getKey().equals("W") || e.getKey().equals("A") || e.getKey().equals("S") || e.getKey().equals("D");
+	}
+
+	private boolean cursorMoved(CursorMoved e) {
+		xmotion += e.getXMotion();
+		ymotion += e.getYMotion();
+		return true;
+	}
+
+	public void onUpdate(float delta) {
 		if (xmotion != 0) {
 			rotation.y -= xmotion * delta;
+			xmotion = 0;
 		}
 		if (ymotion != 0) {
 			rotation.x -= ymotion * delta;
+			ymotion = 0;
 		}
-		return true;
-	}
-
-	private static final float SPEED = 20;
-
-	private boolean keyboardInput(Keyboard k, float delta) {
-		if (!k.isKeyDown("W") && !k.isKeyDown("S") &&
-				!k.isKeyDown("A") && !k.isKeyDown("D")) {
-			return false;
-		}
-
-		float forward = 0;
-		if (k.isKeyDown("W")) {
-			forward++;
-		}
-		if (k.isKeyDown("S")) {
-			forward--;
-		}
-
-		float right = 0;
-		if (k.isKeyDown("A")) {
-			right--;
-		}
-		if (k.isKeyDown("D")) {
-			right++;
-		}
-
-		float distance = SPEED * delta;
-
-		float angle = Float.NaN;
-
-		if (forward > 0) {
-			angle = -90;
-			if (right < 0) {
-				angle -= 45;
-			} else if (right > 0) {
-				angle += 45;
+		if (wBtn ^ sBtn) {
+			float forward = 0;
+			if (wBtn) {
+				forward++;
 			}
-		} else if (forward < 0) {
-			angle = 90;
-			if (right < 0) {
-				angle += 45;
-			} else if (right > 0) {
-				angle -= 45;
+			if (sBtn) {
+				forward--;
+			}
+
+			float right = 0;
+			if (aBtn) {
+				right--;
+			}
+			if (dBtn) {
+				right++;
+			}
+
+			if (forward != 0) {
+				float distance = 15 * delta;
+				float angle;
+				if (forward > 0) {
+					angle = -90;
+				} else {
+					angle = 90;
+				}
+				int direction = (int) -angle / 90;
+				if (right < 0) {
+					angle += direction * 45;
+				} else if (right > 0) {
+					angle -= direction * 45;
+				}
+				position.move(rotation.y + angle, direction * rotation.x, distance);
 			}
 		}
-
-		if (!Float.isNaN(angle)) {
-			position.move(rotation.y + angle, rotation.x, distance);
-		}
-		return true;
 	}
 
 }

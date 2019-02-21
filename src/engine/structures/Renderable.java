@@ -5,6 +5,6 @@ import phisics.steves.Light;
 
 public interface Renderable {
 
-	void render(Camera c, Light l);
+	void onRender(Camera c, Light l);
 
 }

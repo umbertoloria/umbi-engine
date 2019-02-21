@@ -1,11 +1,10 @@
 package engine.window;
 
-import engine.inputs.Cursor;
-import engine.inputs.Keyboard;
-import engine.inputs.Mouse;
+import engine.GameEngine;
+import engine.inputs.Input;
+import engine.events.Event;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
@@ -20,22 +19,20 @@ import static org.lwjgl.system.MemoryUtil.*;
 public class Window {
 
 	private long window;
+	private GameEngine gameEngine;
 	private String title;
 	private int width, height;
 	private boolean fullscreen, vsync;
-	private Keyboard keyboard;
-	private Cursor cursor;
-	private Mouse mouse;
+	private Input input;
 
-	public Window(String title, int width, int height, boolean fullscreen, boolean vsync) {
+	public Window(GameEngine gameEngine, String title, int width, int height, boolean fullscreen, boolean vsync) {
+		this.gameEngine = gameEngine;
 		this.title = title;
 		this.width = width;
 		this.height = height;
 		this.fullscreen = fullscreen;
 		this.vsync = vsync;
-		this.keyboard = new Keyboard();
-		this.mouse = new Mouse();
-		this.cursor = new Cursor();
+		this.input = new Input(this);
 	}
 
 	// Create
@@ -47,7 +44,7 @@ public class Window {
 		glfwDefaultWindowHints();
 		// Finestra
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 		// Antialiasing
 		glfwWindowHint(GLFW_STENCIL_BITS, 8);
 		glfwWindowHint(GLFW_SAMPLES, 8);
@@ -75,9 +72,9 @@ public class Window {
 			glfwSetWindowPos(window, (vidmode.width() - pWidth.get(0)) / 2, (vidmode.height() - pHeight.get(0)) / 2);
 		}
 
-		glfwSetKeyCallback(window, keyboard);
-		glfwSetCursorPosCallback(window, cursor);
-		glfwSetMouseButtonCallback(window, mouse);
+		glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> input.newKey(key, action));
+		glfwSetCursorPosCallback(window, (window, xpos, ypos) -> input.newPos(xpos, ypos));
+		glfwSetMouseButtonCallback(window, (window, button, action, mods) -> input.newMouse(button, action));
 
 		glfwMakeContextCurrent(window);
 		glfwSwapInterval(vsync ? 1 : 0);
@@ -94,17 +91,6 @@ public class Window {
 //		glCullFace(GL_BACK);
 //		glEnable(GL_CULL_FACE);
 		glClearColor(.3f, .3f, .3f, 1f);
-
-		glfwSetWindowSizeCallback(window, new GLFWWindowSizeCallback() {
-			public void invoke(long window, int width, int height) {
-				// FIXME: Favorire il resize.
-				glViewport(0, 0, width, height);
-				System.out.println(width);
-				System.out.println(height);
-				System.out.println();
-			}
-		});
-
 	}
 
 	// Loop
@@ -125,8 +111,7 @@ public class Window {
 		glfwPollEvents();
 	}
 
-	// Closure
-	private void close() {
+	public void close() {
 		glfwSetWindowShouldClose(window, true);
 	}
 
@@ -136,23 +121,11 @@ public class Window {
 		glfwTerminate();
 	}
 
-	// Inputs
-	public Keyboard getKeyboard() {
-		return keyboard;
+	public void pushEvent(Event event) {
+		gameEngine.pushEvent(event);
 	}
 
-	public Cursor getCursor() {
-		return cursor;
+	public void enableInputs() {
+		input.enable();
 	}
-
-	public Mouse getMouse() {
-		return mouse;
-	}
-
-	public void update(Keyboard k) {
-		if (k.isKeyDown("ESCAPE")) {
-			close();
-		}
-	}
-
 }

@@ -1,10 +1,11 @@
 package graphics.camera;
 
 import engine.structures.Renderable;
+import engine.structures.Updatable;
 import graphics.camera.projections.Projection;
 import graphics.maths.Mat;
 
-public abstract class Camera {
+public abstract class Camera implements Updatable {
 
 	private Projection projection;
 

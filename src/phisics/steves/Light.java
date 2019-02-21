@@ -1,8 +1,5 @@
 package phisics.steves;
 
-import engine.inputs.Cursor;
-import engine.inputs.Keyboard;
-import engine.inputs.Mouse;
 import engine.mesh.IndexedMesh;
 import graphics.cosmetics.Color;
 
@@ -19,8 +16,8 @@ public class Light extends Entity {
 	private float speed = 5;
 	private Random r = new Random();
 
-	public void update(float delta, Keyboard k, Cursor c, Mouse m) {
-		super.update(delta, k, c, m);
+	public void onUpdate(float delta) {
+		super.onUpdate(delta);
 		position.y += speed * mov * delta;
 		if (position.y > 10 || position.y < 3) {
 			mov = -mov;

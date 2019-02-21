@@ -1,49 +1,56 @@
 package engine.layer;
 
-import engine.inputs.Cursor;
-import engine.inputs.Keyboard;
-import engine.inputs.Mouse;
+import engine.events.Event;
 import engine.structures.Renderable;
 import engine.structures.Updatable;
-import graphics.camera.IdleCamera;
+import graphics.camera.Camera;
 import phisics.steves.Entity;
 import phisics.steves.Light;
 
 import java.util.ArrayList;
 
-public abstract class Layer {
+public abstract class Layer implements Updatable {
 
-	protected IdleCamera camera;
+	protected Camera camera;
 	protected Light light;
 	private ArrayList<Updatable> updatables = new ArrayList<>();
 	private ArrayList<Renderable> renderables = new ArrayList<>();
 
-	public abstract void init();
+	final void render() {
+		for (Renderable renderable : renderables) {
+			renderable.onRender(camera, light);
+		}
+	}
 
-	// protected <T extends Renderable & Updatable> void add(T e) {
-	protected void add(Entity e) {
+	final void update(float delta) {
+		camera.onUpdate(delta);
+		for (Updatable updatable : updatables) {
+			updatable.onUpdate(delta);
+		}
+		onUpdate(delta);
+	}
+
+	//	protected <T extends Renderable & Updatable> void add(T e) {
+	protected final void add(Entity e) {
 		updatables.add(e);
 		renderables.add(e);
 	}
 
-	protected void add(Updatable u) {
+	protected final void add(Updatable u) {
 		updatables.add(u);
 	}
 
-	protected void add(Renderable r) {
+	protected final void add(Renderable r) {
 		renderables.add(r);
 	}
 
-	public void render() {
-		for (Renderable renderable : renderables) {
-			renderable.render(camera, light);
-		}
+	public void onInit() {
 	}
 
-	public void update(float delta, Keyboard k, Cursor c, Mouse m) {
-		for (Updatable updatable : updatables) {
-			updatable.update(delta, k, c, m);
-		}
+	public void onUpdate(float delta) {
+	}
+
+	public void onEvent(Event event) {
 	}
 
 }

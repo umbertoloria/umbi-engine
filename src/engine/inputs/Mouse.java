@@ -1,24 +1,29 @@
 package engine.inputs;
 
+import engine.events.MousePressed;
+import engine.events.MouseReleased;
+import engine.window.Window;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
 
-public class Mouse extends InputDispatcher implements GLFWMouseButtonCallbackI {
+class Mouse {
 
-	private boolean left, right;
+	private Window window;
 
-	public void invoke(long window, int button, int action, int mods) {
-		left = button == GLFW.GLFW_MOUSE_BUTTON_1 && action == GLFW.GLFW_PRESS;
-		right = button == GLFW.GLFW_MOUSE_BUTTON_3 && action == GLFW.GLFW_PRESS;
-		newInput();
+	Mouse(Window window) {
+		this.window = window;
 	}
 
-	public boolean leftClicked() {
-		return left;
-	}
-
-	public boolean rightClicked() {
-		return right;
+	void invoke(int button, int action) {
+		if (button == GLFW.GLFW_MOUSE_BUTTON_1 && action == GLFW.GLFW_PRESS) {
+			window.pushEvent(new MousePressed("LEFT"));
+		} else {
+			window.pushEvent(new MouseReleased("LEFT"));
+		}
+		if (button == GLFW.GLFW_MOUSE_BUTTON_3 && action == GLFW.GLFW_PRESS) {
+			window.pushEvent(new MousePressed("RIGHT"));
+		} else {
+			window.pushEvent(new MouseReleased("RIGHT"));
+		}
 	}
 
 }

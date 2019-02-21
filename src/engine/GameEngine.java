@@ -1,13 +1,11 @@
 package engine;
 
+import engine.events.Event;
 import engine.layer.Layer;
 import engine.layer.LayerStack;
 import engine.mesh.Mesh;
 import engine.shaders.Shader;
 import engine.window.Window;
-import engine.inputs.Cursor;
-import engine.inputs.Keyboard;
-import engine.inputs.Mouse;
 import graphics.models.Model;
 
 public class GameEngine {
@@ -17,7 +15,7 @@ public class GameEngine {
 	public static final int HEIGHT = (int) (WIDTH / PROPS);
 	private static final boolean FULLSCREEN = false;
 	private static final boolean VSYNC = true;
-	private static final boolean SHOW_FPS = true;
+	private static final boolean SHOW_FPS = false;
 
 	private Window window;
 	private LayerStack layerStack = new LayerStack();
@@ -25,7 +23,7 @@ public class GameEngine {
 	private float lastFPScheck;
 
 	public GameEngine(String title) {
-		window = new Window(title, WIDTH, HEIGHT, FULLSCREEN, VSYNC);
+		window = new Window(this, title, WIDTH, HEIGHT, FULLSCREEN, VSYNC);
 	}
 
 	public void add(Layer layer) {
@@ -47,35 +45,25 @@ public class GameEngine {
 		while (window.running() && window.getTime() <= 1) {
 			window.flush();
 		}
+		window.enableInputs();
 		lastFPScheck = window.getTime();
 		while (window.running()) {
 			now = window.getTime();
 			delta = now - lastTime;
 			lastTime = now;
-			update(window, delta);
+			update(delta);
 			render(window);
 		}
 	}
 
-	private void update(Window window, float delta) {
-		Keyboard k = window.getKeyboard();
-		Cursor c = window.getCursor();
-		Mouse m = window.getMouse();
-		k.newInput();
-		c.newInput();
-		m.newInput();
-		window.update(k);
-		for (Layer layer : layerStack) {
-			layer.update(delta, k, c, m);
-		}
+	private void update(float delta) {
+		layerStack.update(delta);
 		ups++;
 	}
 
 	private void render(Window window) {
 		window.clear();
-		for (Layer layer : layerStack) {
-			layer.render();
-		}
+		layerStack.render();
 		window.flush();
 		fps++;
 		if (lastFPScheck + 1 < window.getTime()) {
@@ -85,6 +73,10 @@ public class GameEngine {
 			}
 			ups = fps = 0;
 		}
+	}
+
+	public void pushEvent(Event event) {
+		layerStack.pushEvent(event);
 	}
 
 //	private static final int FPS_MAX = 100;

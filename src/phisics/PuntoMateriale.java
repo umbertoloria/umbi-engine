@@ -1,8 +1,6 @@
 package phisics;
 
-import engine.inputs.Cursor;
-import engine.inputs.Keyboard;
-import engine.inputs.Mouse;
+import engine.inputs.Input;
 import engine.structures.Updatable;
 import graphics.maths.Vec3;
 
@@ -23,7 +21,7 @@ public abstract class PuntoMateriale implements Updatable {
 		return weight;
 	}
 
-	public Vec3 getPosition() {
+	public final Vec3 getPosition() {
 		return new Vec3(position);
 	}
 
@@ -36,7 +34,7 @@ public abstract class PuntoMateriale implements Updatable {
 //		this.acceleration = acceleration;
 //	}
 
-	public void update(float delta, Keyboard k, Cursor c, Mouse m) {
+	public void onUpdate(float delta) {
 		if (weight == 0) {
 			return;
 		}

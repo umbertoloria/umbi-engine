@@ -1,8 +1,5 @@
 package phisics.steves;
 
-import engine.inputs.Cursor;
-import engine.inputs.Keyboard;
-import engine.inputs.Mouse;
 import engine.mesh.Mesh;
 import engine.shaders.Shader;
 import engine.structures.Renderable;
@@ -27,7 +24,7 @@ public class Entity extends PuntoMateriale implements Renderable {
 		this.shader = Shader.basic_shader;
 	}
 
-	public void render(Camera c, Light light) {
+	public final void onRender(Camera c, Light light) {
 		if (!c.canRender(this)) {
 			return;
 		}
@@ -44,10 +41,6 @@ public class Entity extends PuntoMateriale implements Renderable {
 		shader.disable();
 	}
 
-	public void update(float delta, Keyboard k, Cursor c, Mouse m) {
-		super.update(delta, k, c, m);
-	}
-
 	private Mat getModelMatrix() {
 		return Mat.model(
 				position.x, position.y, position.z,
@@ -56,19 +49,19 @@ public class Entity extends PuntoMateriale implements Renderable {
 		);
 	}
 
-	public void setPosition(float x, float y, float z) {
+	public final void setPosition(float x, float y, float z) {
 		position.place(x, y, z);
 	}
 
-	public void setScale(float value) {
+	public final void setScale(float value) {
 		scale.place(value, value, value);
 	}
 
-	public float getPitch() {
+	public final float getPitch() {
 		return rotation.x;
 	}
 
-	public float getYaw() {
+	public final float getYaw() {
 		return rotation.y;
 	}
 

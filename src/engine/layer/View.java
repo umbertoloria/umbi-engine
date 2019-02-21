@@ -33,13 +33,13 @@ public class View implements Renderable {
 		renderables.add(r);
 	}
 
-	public void render(Camera ignoroCamera, Light light) {
+	public void onRender(Camera ignoroCamera, Light light) {
 		glEnable(GL_SCISSOR_TEST);
 		glScissor((int) start.x, (int) start.y, (int) finish.x, (int) finish.y);
 		glViewport((int) start.x, (int) start.y, width, height);
 		glDisable(GL_SCISSOR_TEST);
 		for (Renderable renderable : renderables) {
-			renderable.render(camera, light);
+			renderable.onRender(camera, light);
 		}
 	}
 

@@ -1,37 +1,29 @@
 package engine.inputs;
 
+import engine.events.CursorMoved;
+import engine.events.CursorPlaced;
+import engine.window.Window;
 import graphics.maths.Vec2;
-import org.lwjgl.glfw.GLFWCursorPosCallbackI;
 
-public class Cursor extends InputDispatcher implements GLFWCursorPosCallbackI {
+class Cursor {
 
-	public void invoke(long window, double dx, double dy) {
+	void invoke(double dx, double dy) {
+		window.pushEvent(new CursorPlaced(dx, dy));
 		Vec2 now = new Vec2(dx, dy);
 		if (pos == null) {
 			pos = new Vec2(now);
 		} else {
-			xmotion = (now.x - pos.x) * SENSIBILITY;
-			ymotion = (now.y - pos.y) * SENSIBILITY;
+			window.pushEvent(new CursorMoved((now.x - pos.x) * SENSIBILITY, (now.y - pos.y) * SENSIBILITY));
 		}
 		pos.place(now);
-		newInput();
 	}
 
-	private static final float SENSIBILITY = 5f;
+	private Window window;
+	private static final float SENSIBILITY = 4f;
 	private Vec2 pos;
 
-	private float xmotion, ymotion;
-
-	public float getXMotion() {
-		float val = xmotion;
-		xmotion = 0;
-		return val;
-	}
-
-	public float getYMotion() {
-		float val = ymotion;
-		ymotion = 0;
-		return val;
+	Cursor(Window window) {
+		this.window = window;
 	}
 
 }
