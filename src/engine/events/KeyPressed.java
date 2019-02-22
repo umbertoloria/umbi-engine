@@ -9,7 +9,7 @@ public class KeyPressed extends Event {
 		this.key = key;
 	}
 
-	public String getKey() {
+	String getKey() {
 		return key;
 	}
 

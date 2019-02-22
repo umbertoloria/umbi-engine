@@ -2,7 +2,7 @@ package engine.inputs;
 
 import engine.events.MousePressed;
 import engine.events.MouseReleased;
-import engine.window.Window;
+import engine.Window;
 import org.lwjgl.glfw.GLFW;
 
 class Mouse {

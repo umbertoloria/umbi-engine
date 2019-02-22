@@ -3,15 +3,14 @@ package engine;
 import engine.events.Event;
 import engine.layer.Layer;
 import engine.layer.LayerStack;
-import engine.mesh.Mesh;
 import engine.shaders.Shader;
-import engine.window.Window;
 import graphics.models.Model;
+import graphics.textures.Texture;
 
 public class GameEngine {
 
 	public static final float PROPS = 16f / 9;
-	public static final int WIDTH = 2800;
+	public static final int WIDTH = 1800;
 	public static final int HEIGHT = (int) (WIDTH / PROPS);
 	private static final boolean FULLSCREEN = false;
 	private static final boolean VSYNC = true;
@@ -35,8 +34,12 @@ public class GameEngine {
 		Model.loadAll();
 		Mesh.loadAll();
 		Shader.loadAll();
+		Texture.loadAll();
 		layerStack.init();
 		loop(window);
+		Mesh.cleanAll();
+		Shader.cleanAll();
+		Texture.cleanAll();
 		window.terminate();
 	}
 

@@ -34,6 +34,8 @@ public abstract class Camera implements Updatable {
 				String.format("ROT: RX: %3.1f RY: %3.1f", rx, ry);
 	}
 
-	public abstract boolean canRender(Renderable r);
+	public boolean canRender(Renderable r) {
+		return true;
+	}
 
 }

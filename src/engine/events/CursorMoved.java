@@ -10,11 +10,11 @@ public class CursorMoved extends Event {
 		this.y = y;
 	}
 
-	public double getXMotion() {
+	double getXMotion() {
 		return x;
 	}
 
-	public double getYMotion() {
+	double getYMotion() {
 		return y;
 	}
 

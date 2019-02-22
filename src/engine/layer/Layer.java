@@ -4,8 +4,8 @@ import engine.events.Event;
 import engine.structures.Renderable;
 import engine.structures.Updatable;
 import graphics.camera.Camera;
-import phisics.steves.Entity;
-import phisics.steves.Light;
+import phisics.En;
+import phisics.Light;
 
 import java.util.ArrayList;
 
@@ -30,8 +30,7 @@ public abstract class Layer implements Updatable {
 		onUpdate(delta);
 	}
 
-	//	protected <T extends Renderable & Updatable> void add(T e) {
-	protected final void add(Entity e) {
+	protected final void add(En e) {
 		updatables.add(e);
 		renderables.add(e);
 	}

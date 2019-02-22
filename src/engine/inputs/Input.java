@@ -1,6 +1,6 @@
 package engine.inputs;
 
-import engine.window.Window;
+import engine.Window;
 
 public class Input {
 

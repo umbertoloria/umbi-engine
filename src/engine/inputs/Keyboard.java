@@ -3,7 +3,7 @@ package engine.inputs;
 import engine.events.KeyPressed;
 import engine.events.KeyPressing;
 import engine.events.KeyReleased;
-import engine.window.Window;
+import engine.Window;
 
 import java.util.HashMap;
 

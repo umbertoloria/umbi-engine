@@ -1,8 +1,8 @@
-package engine.window;
+package engine;
 
 import engine.GameEngine;
-import engine.inputs.Input;
 import engine.events.Event;
+import engine.inputs.Input;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
@@ -87,9 +87,8 @@ public class Window {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 //		glEnable(GL_LIGHT0);
-//		glActiveTexture(GL_TEXTURE1);
-//		glCullFace(GL_BACK);
 //		glEnable(GL_CULL_FACE);
+//		glCullFace(GL_BACK);
 		glClearColor(.3f, .3f, .3f, 1f);
 	}
 

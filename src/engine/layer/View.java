@@ -2,9 +2,9 @@ package engine.layer;
 
 import engine.GameEngine;
 import engine.structures.Renderable;
-import graphics.maths.Vec2;
 import graphics.camera.Camera;
-import phisics.steves.Light;
+import graphics.maths.Vec2;
+import phisics.Light;
 
 import java.util.ArrayList;
 
@@ -35,8 +35,8 @@ public class View implements Renderable {
 
 	public void onRender(Camera ignoroCamera, Light light) {
 		glEnable(GL_SCISSOR_TEST);
-		glScissor((int) start.x, (int) start.y, (int) finish.x, (int) finish.y);
-		glViewport((int) start.x, (int) start.y, width, height);
+		glScissor((int) start.x(), (int) start.y(), (int) finish.x(), (int) finish.y());
+		glViewport((int) start.x(), (int) start.y(), width, height);
 		glDisable(GL_SCISSOR_TEST);
 		for (Renderable renderable : renderables) {
 			renderable.onRender(camera, light);

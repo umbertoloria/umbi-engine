@@ -9,7 +9,7 @@ public class MousePressed extends Event {
 		this.button = button;
 	}
 
-	public String getButton() {
+	String getButton() {
 		return button;
 	}
 

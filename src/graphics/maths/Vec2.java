@@ -1,12 +1,8 @@
 package graphics.maths;
 
-public class Vec2 {
+public final class Vec2 {
 
-	public float x, y;
-
-	public Vec2(Vec2 save) {
-		place(save);
-	}
+	private final float x, y;
 
 	public Vec2(float x, float y) {
 		this.x = x;
@@ -23,13 +19,27 @@ public class Vec2 {
 //		y += Math.sin(Math.toRadians(angle)) * length;
 //	}
 
-	public void place(Vec2 save) {
-		x = save.x;
-		y = save.y;
+	public Vec2 add(Vec2 add) {
+		return new Vec2(x + add.x, y + add.y);
 	}
 
-	public boolean equals(Vec2 o) {
-		return x == o.x && y == o.y;
+	public Vec2 multiply(float scalar) {
+		return new Vec2(x * scalar, y * scalar);
+	}
+
+	public float x() {
+		return x;
+	}
+
+	public float y() {
+		return y;
+	}
+
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Vec2 vec2 = (Vec2) o;
+		return vec2.x == x && vec2.y == y;
 	}
 
 	public String toString() {

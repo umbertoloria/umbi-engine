@@ -7,8 +7,8 @@ import static org.lwjgl.opengl.GL20.*;
 
 class ShaderUtils {
 
-	static int load(String path) {
-		Scanner s = new Scanner(Shader.class.getResourceAsStream(path));
+	static int load(String file) {
+		Scanner s = new Scanner(Shader.class.getResourceAsStream(file));
 		String line;
 
 		StringBuilder vert = new StringBuilder();

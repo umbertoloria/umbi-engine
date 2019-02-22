@@ -1,53 +1,87 @@
 package graphics.models;
 
+import graphics.maths.Vec2;
 import graphics.maths.Vec3;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Model {
 
-	public static Model cube, sphere, cone, cylinder, monkey;
+	public static Model cube, sphere, cone, cylinder, monkey, quad;
 
 	public static void loadAll() {
-		cube = MeshLoader.loadMesh("cube.obj");
-		sphere = MeshLoader.loadMesh("sphere.obj");
-		cone = MeshLoader.loadMesh("cone.obj");
-		cylinder = MeshLoader.loadMesh("cylinder.obj");
-		monkey = MeshLoader.loadMesh("monkey.obj");
+		cube = ModelLoader.loadModel("cube.obj");
+		sphere = ModelLoader.loadModel("sphere.obj");
+		cone = ModelLoader.loadModel("cone.obj");
+		cylinder = ModelLoader.loadModel("cylinder.obj");
+		monkey = ModelLoader.loadModel("monkey.obj");
+		quad = ModelLoader.loadModel("quad.obj");
 	}
 
+	private boolean hasNormals, hasTextureCoordinates;
 	private Vertex[] vertices;
 	private int[] indices;
 
-	Model(List<Vec3> positions, List<Vec3> normals, List<MeshLoader.OBJIndex> objIndices) {
-		ArrayList<Vertex> verts = new ArrayList<>();
-		ArrayList<Integer> inds = new ArrayList<>();
+	Model(Vec3[] positions, Vec3[] normals, ModelFace[] objIndices) {
+		hasNormals = true;
+		hasTextureCoordinates = false;
+		indexThisList(positions, null, normals, objIndices);
+	}
+
+	Model(Vec3[] positions, Vec2[] textureCoordinates, ModelFace[] objIndices) {
+		hasNormals = false;
+		hasTextureCoordinates = true;
+		indexThisList(positions, textureCoordinates, null, objIndices);
+	}
+
+	Model(Vec3[] positions, ModelFace[] objIndices) {
+		hasNormals = false;
+		hasTextureCoordinates = false;
+		indexThisList(positions, null, null, objIndices);
+	}
+
+	private void indexThisList(Vec3[] positions, Vec2[] textureCoordinates, Vec3[] normals, ModelFace[] objIndices) {
+		ArrayList<Vertex> verticesList = new ArrayList<>();
+		ArrayList<Integer> indicesList = new ArrayList<>();
 		int cursore = 0;
-		for (MeshLoader.OBJIndex objIndex : objIndices) {
-			Vertex app = new Vertex(
-					positions.get(objIndex.getPositionIndex()),
-					normals.get(objIndex.getNormalIndex())
-			);
+		for (ModelFace modelFace : objIndices) {
+			Vertex app = makeVertex(positions, textureCoordinates, normals, modelFace);
 			int firstOccurrence = -1;
-			for (int j = 0; j < verts.size(); j++) {
-				if (verts.get(j).equals(app)) {
+			for (int j = 0; j < verticesList.size(); j++) {
+				if (verticesList.get(j).equals(app)) {
 					firstOccurrence = j;
 				}
 			}
 			if (firstOccurrence >= 0) {
-				inds.add(firstOccurrence);
+				indicesList.add(firstOccurrence);
 			} else {
-				verts.add(app);
-				inds.add(cursore++);
+				verticesList.add(app);
+				indicesList.add(cursore++);
 			}
 		}
-		vertices = new Vertex[verts.size()];
-		verts.toArray(vertices);
-		indices = new int[inds.size()];
-		for (int i = 0; i < inds.size(); i++) {
-			indices[i] = inds.get(i);
+		vertices = new Vertex[verticesList.size()];
+		verticesList.toArray(vertices);
+		indices = new int[indicesList.size()];
+		for (int i = 0; i < indicesList.size(); i++) {
+			indices[i] = indicesList.get(i);
 		}
+	}
+
+	private Vertex makeVertex(Vec3[] positions, Vec2[] textureCoordinates, Vec3[] normals, ModelFace modelFace) {
+		if (textureCoordinates != null && normals != null) {
+			// Il vertice è dotato di textureCoordinate e Normal
+			return new Vertex(positions[modelFace.getPositionIndex()],
+					textureCoordinates[modelFace.getTextureCoordinateIndex()], normals[modelFace.getNormalIndex()]);
+		} else if (normals != null) {
+			// Il vertice è dotato solo di Normal
+			return new Vertex(positions[modelFace.getPositionIndex()], normals[modelFace.getNormalIndex()]);
+		} else if (textureCoordinates != null) {
+			// Il vertice è dotato solo di textureCoordinate
+			return new Vertex(positions[modelFace.getPositionIndex()],
+					textureCoordinates[modelFace.getTextureCoordinateIndex()]);
+		}
+		// Il vertice ha solo una posizione
+		return new Vertex(positions[modelFace.getPositionIndex()]);
 	}
 
 	public int getIndicesCount() {
@@ -58,9 +92,9 @@ public class Model {
 		float[] positions = new float[vertices.length * 3];
 		int i = 0;
 		for (Vertex vertex : vertices) {
-			positions[i++] = vertex.getPosition().x;
-			positions[i++] = vertex.getPosition().y;
-			positions[i++] = vertex.getPosition().z;
+			positions[i++] = vertex.getPosition().x();
+			positions[i++] = vertex.getPosition().y();
+			positions[i++] = vertex.getPosition().z();
 		}
 		return positions;
 	}
@@ -69,9 +103,19 @@ public class Model {
 		float[] normals = new float[vertices.length * 3];
 		int i = 0;
 		for (Vertex vertex : vertices) {
-			normals[i++] = vertex.getNormal().x;
-			normals[i++] = vertex.getNormal().y;
-			normals[i++] = vertex.getNormal().z;
+			normals[i++] = vertex.getNormal().x();
+			normals[i++] = vertex.getNormal().y();
+			normals[i++] = vertex.getNormal().z();
+		}
+		return normals;
+	}
+
+	public float[] getTextureCoordinatesArray() {
+		float[] normals = new float[vertices.length * 2];
+		int i = 0;
+		for (Vertex vertex : vertices) {
+			normals[i++] = vertex.getTextureCoordinate().x();
+			normals[i++] = vertex.getTextureCoordinate().y();
 		}
 		return normals;
 	}
@@ -80,26 +124,12 @@ public class Model {
 		return indices;
 	}
 
-	public float[] getLinearPositionsArray() {
-		float[] positions = new float[indices.length * 3];
-		int i = 0;
-		for (int index : indices) {
-			positions[i++] = vertices[index].getPosition().x;
-			positions[i++] = vertices[index].getPosition().y;
-			positions[i++] = vertices[index].getPosition().z;
-		}
-		return positions;
+	public boolean hasNormals() {
+		return hasNormals;
 	}
 
-	public float[] getLinearNormalsArray() {
-		float[] normals = new float[indices.length * 3];
-		int i = 0;
-		for (int index : indices) {
-			normals[i++] = vertices[index].getNormal().x;
-			normals[i++] = vertices[index].getNormal().y;
-			normals[i++] = vertices[index].getNormal().z;
-		}
-		return normals;
+	public boolean hasTextureCoordinates() {
+		return hasTextureCoordinates;
 	}
 
 }

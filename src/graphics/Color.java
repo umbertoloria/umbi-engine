@@ -1,4 +1,4 @@
-package graphics.cosmetics;
+package graphics;
 
 import java.util.Random;
 

@@ -1,6 +1,5 @@
 package phisics;
 
-import engine.inputs.Input;
 import engine.structures.Updatable;
 import graphics.maths.Vec3;
 
@@ -22,7 +21,7 @@ public abstract class PuntoMateriale implements Updatable {
 	}
 
 	public final Vec3 getPosition() {
-		return new Vec3(position);
+		return position;
 	}
 
 //	public void setMotoUniforme(float speed) {

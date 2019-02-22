@@ -1,25 +1,22 @@
 package tests;
 
+import engine.Mesh;
 import engine.events.Event;
-import engine.events.EventDispatcher;
-import engine.events.MousePressed;
 import engine.layer.Layer;
-import engine.mesh.Mesh;
+import graphics.Color;
 import graphics.camera.HatCamera;
-import graphics.cosmetics.Color;
-import phisics.steves.Entity;
-import phisics.steves.Light;
-import phisics.steves.Player;
+import phisics.En3;
+import phisics.Light;
+import phisics.Player;
 
 import java.util.Random;
 
-public class SimpleMap extends Layer {
+public class LightSimulation extends Layer {
 
 	private Random r = new Random();
 	private Player scimmia;
 
 	public void onInit() {
-
 		float size = 2;
 		// Player
 		scimmia = new Player();
@@ -44,7 +41,7 @@ public class SimpleMap extends Layer {
 						x / 50f * (-(z + 1) / 9f) * .8f + .2f * r.nextFloat(),
 						-(z + 1) / 9f
 				);
-				Entity e = new Entity(Mesh.cube, c);
+				En3 e = new En3(Mesh.cube, c);
 				e.setPosition(x * size, 0, z * size);
 				e.setScale(size);
 				add(e);
@@ -55,7 +52,7 @@ public class SimpleMap extends Layer {
 	public void onUpdate(float delta) {
 		while (sps > 0) {
 			Mesh mmm = r.nextBoolean() ? Mesh.cone : Mesh.sphere;
-			Entity a = new Entity(mmm, new Color());
+			En3 a = new En3(mmm, new Color());
 			a.setPosition(r.nextInt(100), 0, -r.nextInt(40));
 			a.setScale(2);
 			add(a);
@@ -65,17 +62,9 @@ public class SimpleMap extends Layer {
 
 	public void onEvent(Event event) {
 		scimmia.onEvent(event);
-		EventDispatcher ed = new EventDispatcher(event);
-		ed.dispatch(Event.Type.MOUSE_PRESSED, (e) -> mousePressed((MousePressed) e));
+		event.onMousePressed("LEFT", () -> sps++);
 	}
 
 	private int sps = 0;
-
-	private boolean mousePressed(MousePressed e) {
-		if (e.getButton().equals("LEFT")) {
-			sps++;
-		}
-		return e.getButton().equals("LEFT");
-	}
 
 }

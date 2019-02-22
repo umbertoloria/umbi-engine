@@ -12,10 +12,6 @@ public class LayerStack {
 		layers.add(layer);
 	}
 
-	public void remove(Layer layer) {
-		layers.remove(layer);
-	}
-
 	public void init() {
 		for (Layer layer : layers) {
 			layer.onInit();
