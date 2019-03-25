@@ -40,10 +40,6 @@ class Keyboard {
 	}
 
 	void invoke(int key, int action) {
-		if (key == GLFW_KEY_ESCAPE) {
-			window.close();
-			return;
-		}
 		boolean newstate = action != GLFW_RELEASE;
 		if (keys[key] != newstate) {
 			// Cambia stato

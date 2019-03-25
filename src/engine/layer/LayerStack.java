@@ -1,5 +1,6 @@
 package engine.layer;
 
+import engine.Renderer;
 import engine.events.Event;
 
 import java.util.ArrayList;
@@ -20,13 +21,13 @@ public class LayerStack {
 
 	public void update(float delta) {
 		for (Layer layer : layers) {
-			layer.update(delta);
+			layer.onUpdate(delta);
 		}
 	}
 
-	public void render() {
+	public void render(Renderer renderer) {
 		for (Layer layer : layers) {
-			layer.render();
+			layer.onRender(renderer);
 		}
 	}
 

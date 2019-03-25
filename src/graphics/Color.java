@@ -4,6 +4,7 @@ import java.util.Random;
 
 public class Color {
 
+	public static final Color dark_red = new Color(.5f, 0, 0);
 	public static final Color red = new Color(1, 0, 0);
 	public static final Color green = new Color(0, 1, 0);
 	public static final Color blue = new Color(0, 0, 1);

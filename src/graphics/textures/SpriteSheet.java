@@ -4,37 +4,35 @@ import graphics.maths.Vec2;
 
 public class SpriteSheet {
 
+	private String filename;
 	private Texture texture;
-	private SpriteMap spriteMap;
-	private Vec2 scale;
+	private Vec2 scale, offset;
 
-	public SpriteSheet(String filegroup, int width, int height) {
-		texture = new Texture(filegroup + ".png");
-		spriteMap = new SpriteMap(filegroup + ".map");
-//		rowCount = texture.getHeight() / height;
-//		colCount = texture.getWidth() / width;
+	public SpriteSheet(String filename, int width, int height) {
+		this.filename = filename;
+		texture = new Texture(filename + ".png", true);
 		scale = new Vec2((float) texture.getWidth() / width, (float) texture.getHeight() / height);
+		offset = new Vec2(0, 0);
 	}
 
 	public Vec2 getScale() {
 		return scale;
 	}
 
+	public void setOffset(float x, float y) {
+		offset = new Vec2(x, y);
+	}
+
+	public Vec2 getOffset() {
+		return offset;
+	}
+
 	public Texture getTexture() {
 		return texture;
 	}
 
-//	public void nextCol() {
-//		offset = new Vec2(spriteMap.nextFrom((int) offset.x()), offset.y());
-//	}
-//
-//	public void nextRow() {
-////		offset.y = (rowCount + offset.y + 1) % rowCount;
-//		offset = new Vec2(offset.x(), offset.y() + 1);
-//	}
-
-	SpriteMap getSpriteMap() {
-		return spriteMap;
+	public String getFilename() {
+		return filename;
 	}
 
 }

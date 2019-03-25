@@ -2,7 +2,7 @@ package graphics.maths;
 
 public final class Vec3 {
 
-	private final float x, y, z;
+	public final float x, y, z;
 
 	public Vec3(float sx, float sy, float sz) {
 		x = sx;
@@ -29,17 +29,17 @@ public final class Vec3 {
 		return new Vec3(x + add.x, y + add.y, z + add.z);
 	}
 
-	public float x() {
-		return x;
-	}
-
-	public float y() {
-		return y;
-	}
-
-	public float z() {
-		return z;
-	}
+//	public float x() {
+//		return x;
+//	}
+//
+//	public float y() {
+//		return y;
+//	}
+//
+//	public float z() {
+//		return z;
+//	}
 
 	public boolean equals(Object o) {
 		if (this == o) return true;

@@ -18,11 +18,13 @@ public class GameEngine {
 
 	private Window window;
 	private LayerStack layerStack = new LayerStack();
+	private Renderer renderer;
 	private int ups, fps;
 	private float lastFPScheck;
 
 	public GameEngine(String title) {
 		window = new Window(this, title, WIDTH, HEIGHT, FULLSCREEN, VSYNC);
+		renderer = new Renderer(window);
 	}
 
 	public void add(Layer layer) {
@@ -66,7 +68,7 @@ public class GameEngine {
 
 	private void render(Window window) {
 		window.clear();
-		layerStack.render();
+		layerStack.render(renderer);
 		window.flush();
 		fps++;
 		if (lastFPScheck + 1 < window.getTime()) {
@@ -95,7 +97,7 @@ public class GameEngine {
 //			delta += (now - lastTime) / ns;
 //			lastTime = now;
 //			if (delta >= 1.0) {
-//				update(window, fakeDeltaTime);
+//				onUpdate(window, fakeDeltaTime);
 //				delta--;
 //			}
 //			// Render
@@ -114,7 +116,7 @@ public class GameEngine {
 //			currentTime = newTime;
 //			while (frameTime > 0.0) {
 //				float deltaTime = Math.min(frameTime, dt);
-//				update(window, deltaTime);
+//				onUpdate(window, deltaTime);
 //				frameTime -= deltaTime;
 //			}
 //			// Render
@@ -135,7 +137,7 @@ public class GameEngine {
 //			currentTime = newTime;
 //			accumulator += frameTime;
 //			while (accumulator >= dt) {
-//				update(window, dt);
+//				onUpdate(window, dt);
 //				accumulator -= dt;
 //			}
 //			// Render

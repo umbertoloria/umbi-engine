@@ -17,11 +17,12 @@ public abstract class Shader {
 	public static final int TEXTURE_COORDINATE_LOC = 1;
 	public static final int NORMAL_LOC = 2;
 
-	public static Shader basic, light;
+	public static Shader basic, light, gbutton;
 
 	public static void loadAll() {
 		basic = new BasicShader();
 		light = new LightShader();
+		gbutton = new GButtonShader();
 	}
 
 	public static void cleanAll() {
@@ -54,20 +55,16 @@ public abstract class Shader {
 		glUniform4f(getUniform(name), color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
 	}
 
-	public void setUniformOpaqueColor(String name, Color color) {
-		glUniform3f(getUniform(name), color.getRed(), color.getGreen(), color.getBlue());
-	}
-
 	public void setUniformMat4f(String name, Mat matrix) {
 		glUniformMatrix4fv(getUniform(name), false, matrix.toArray());
 	}
 
 	public void setUniformVec2(String name, Vec2 v) {
-		glUniform2f(getUniform(name), v.x(), v.y());
+		glUniform2f(getUniform(name), v.x, v.y);
 	}
 
 	public void setUniformVec3(String name, Vec3 v) {
-		glUniform3f(getUniform(name), v.x(), v.y(), v.z());
+		glUniform3f(getUniform(name), v.x, v.y, v.z);
 	}
 
 	public void setUniformTexture(String name, Texture texture) {

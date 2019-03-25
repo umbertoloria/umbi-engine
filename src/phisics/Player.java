@@ -13,6 +13,7 @@ public class Player extends En3 {
 
 	private boolean wBtn, aBtn, sBtn, dBtn;
 	private float xmotion, ymotion;
+	private static float SENSIBILITY = 4;
 
 	public void onEvent(Event event) {
 		event.onKeyNewState("W", (state) -> wBtn = state);
@@ -20,12 +21,12 @@ public class Player extends En3 {
 		event.onKeyNewState("S", (state) -> sBtn = state);
 		event.onKeyNewState("D", (state) -> dBtn = state);
 		event.onCursorMoved((xmo, ymo) -> {
-			xmotion += xmo;
-			ymotion += ymo;
+			xmotion += xmo * SENSIBILITY;
+			ymotion += ymo * SENSIBILITY;
 		});
 	}
 
-	public void onUpdate(float delta) {
+	public void update(float delta) {
 		if (xmotion != 0) {
 			rotation = rotation.add(new Vec3(0, -xmotion * delta, 0));
 			xmotion = 0;
@@ -65,7 +66,7 @@ public class Player extends En3 {
 				} else if (right > 0) {
 					angle -= direction * 45;
 				}
-				position = position.move(rotation.y() + angle, direction * rotation.x(), distance);
+				position = position.move(rotation.y + angle, direction * rotation.x, distance);
 			}
 		}
 	}

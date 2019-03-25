@@ -2,6 +2,6 @@ package engine.structures;
 
 public interface Updatable {
 
-	void onUpdate(float delta);
+	void update(float delta);
 
 }

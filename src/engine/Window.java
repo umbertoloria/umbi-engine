@@ -92,6 +92,14 @@ public class Window {
 		glClearColor(.3f, .3f, .3f, 1f);
 	}
 
+	public void enableDepth() {
+		glEnable(GL_DEPTH_TEST);
+	}
+
+	public void disableDepth() {
+		glDisable(GL_DEPTH_TEST);
+	}
+
 	// Loop
 	public boolean running() {
 		return !glfwWindowShouldClose(window);

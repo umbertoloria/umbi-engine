@@ -49,7 +49,7 @@ public class IdleCamera extends Camera {
 		event.onKeyNewState("SHIFT", (state) -> shiftBtn = state);
 	}
 
-	public void onUpdate(float delta) {
+	public void update(float delta) {
 	}
 
 }

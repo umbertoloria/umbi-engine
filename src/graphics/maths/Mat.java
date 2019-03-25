@@ -11,11 +11,15 @@ public class Mat {
 	}
 
 	public static Mat orthographic(float left, float right, float bottom, float top, float near, float far) {
-		return new Mat(new Matrix4f().ortho(left, right, bottom, top, near, far));
+		Matrix4f result = new Matrix4f();
+		result = result.ortho(left, right, bottom, top, near, far);
+		return new Mat(result);
 	}
 
 	public static Mat perspective(float fov, float aspRatio, float near, float far) {
-		return new Mat(new Matrix4f().perspective((float) Math.toRadians(fov), aspRatio, near, far));
+		Matrix4f result = new Matrix4f();
+		result = result.perspective((float) Math.toRadians(fov), aspRatio, near, far);
+		return new Mat(result);
 	}
 
 	public static Mat model(float tx, float ty, float tz, float rx, float ry, float rz, float sx, float sy, float sz) {

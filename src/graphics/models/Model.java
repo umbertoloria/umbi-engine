@@ -92,9 +92,9 @@ public class Model {
 		float[] positions = new float[vertices.length * 3];
 		int i = 0;
 		for (Vertex vertex : vertices) {
-			positions[i++] = vertex.getPosition().x();
-			positions[i++] = vertex.getPosition().y();
-			positions[i++] = vertex.getPosition().z();
+			positions[i++] = vertex.getPosition().x;
+			positions[i++] = vertex.getPosition().y;
+			positions[i++] = vertex.getPosition().z;
 		}
 		return positions;
 	}
@@ -103,9 +103,9 @@ public class Model {
 		float[] normals = new float[vertices.length * 3];
 		int i = 0;
 		for (Vertex vertex : vertices) {
-			normals[i++] = vertex.getNormal().x();
-			normals[i++] = vertex.getNormal().y();
-			normals[i++] = vertex.getNormal().z();
+			normals[i++] = vertex.getNormal().x;
+			normals[i++] = vertex.getNormal().y;
+			normals[i++] = vertex.getNormal().z;
 		}
 		return normals;
 	}
@@ -114,8 +114,8 @@ public class Model {
 		float[] normals = new float[vertices.length * 2];
 		int i = 0;
 		for (Vertex vertex : vertices) {
-			normals[i++] = vertex.getTextureCoordinate().x();
-			normals[i++] = vertex.getTextureCoordinate().y();
+			normals[i++] = vertex.getTextureCoordinate().x;
+			normals[i++] = vertex.getTextureCoordinate().y;
 		}
 		return normals;
 	}

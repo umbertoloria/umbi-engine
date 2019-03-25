@@ -1,5 +1,7 @@
 package engine.events;
 
+import java.security.Key;
+
 public class Event {
 
 	public enum Type {
@@ -32,8 +34,24 @@ public class Event {
 		}
 	}
 
+	public void onKeyPressing(String key, GeneralEventHandler handler) {
+		if (!handled) {
+			if (this instanceof KeyPressing && ((KeyPressing) this).getKey().equals(key)) {
+				handler.response();
+				handled = true;
+			}
+		}
+	}
+
 	public void onMousePressed(String button, GeneralEventHandler handler) {
 		if (!handled && this instanceof MousePressed && ((MousePressed) this).getButton().equals(button)) {
+			handler.response();
+			handled = true;
+		}
+	}
+
+	public void onMouseReleased(String button, GeneralEventHandler handler) {
+		if (!handled && this instanceof MouseReleased && ((MouseReleased) this).getButton().equals(button)) {
 			handler.response();
 			handled = true;
 		}
@@ -45,6 +63,10 @@ public class Event {
 			handler.response(smartEvent.getXMotion(), smartEvent.getYMotion());
 			handled = true;
 		}
+	}
+
+	public void stopPropagation() {
+		handled = true;
 	}
 
 	public String toString() {

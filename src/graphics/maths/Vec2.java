@@ -2,7 +2,7 @@ package graphics.maths;
 
 public final class Vec2 {
 
-	private final float x, y;
+	public final float x, y;
 
 	public Vec2(float x, float y) {
 		this.x = x;
@@ -27,13 +27,13 @@ public final class Vec2 {
 		return new Vec2(x * scalar, y * scalar);
 	}
 
-	public float x() {
-		return x;
-	}
-
-	public float y() {
-		return y;
-	}
+//	public float x() {
+//		return x;
+//	}
+//
+//	public float y() {
+//		return y;
+//	}
 
 	public boolean equals(Object o) {
 		if (this == o) return true;

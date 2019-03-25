@@ -17,10 +17,10 @@ public class HatCamera extends Camera {
 		return r != e;
 	}
 
-	public void onUpdate(float delta) {
-		tx = e.getPosition().x();
-		ty = e.getPosition().y();
-		tz = e.getPosition().z();
+	public void update(float delta) {
+		tx = e.getPosition().x;
+		ty = e.getPosition().y;
+		tz = e.getPosition().z;
 		rx = e.getPitch();
 		ry = e.getYaw();
 	}

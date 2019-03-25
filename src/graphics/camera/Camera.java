@@ -29,13 +29,13 @@ public abstract class Camera implements Updatable {
 		return Mat.view(tx, ty, tz, rx, ry, 0);
 	}
 
-	public String toString() {
-		return String.format("POS: TX: %3.1f TY: %3.1f TZ: %3.1f;", tx, ty, tz) +
-				String.format("ROT: RX: %3.1f RY: %3.1f", rx, ry);
-	}
-
 	public boolean canRender(Renderable r) {
 		return true;
+	}
+
+	public String toString() {
+		return String.format("POS: TX: %3.1f TY: %3.1f TZ: %3.1f;", tx, ty, tz) +
+				String.format(" ROT: RX: %3.1f RY: %3.1f", rx, ry);
 	}
 
 }

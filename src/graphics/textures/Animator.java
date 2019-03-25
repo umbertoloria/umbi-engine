@@ -5,20 +5,21 @@ import graphics.maths.Vec2;
 public class Animator {
 
 	private SpriteSheet spriteSheet;
+	private SpriteMap spriteMap;
 	private SpriteGroup currentGroup;
 
 	private int currentOffset;
 	private int direction = 1;
 
+	private int row;
 	private long last;
 	private int delay;
 
-	private int offsetInHeight;
-
-	public Animator(SpriteSheet spriteSheet, int delay, int offsetInHeight) {
+	public Animator(SpriteSheet spriteSheet, int delay, int row) {
 		this.spriteSheet = spriteSheet;
+		this.spriteMap = new SpriteMap(spriteSheet.getFilename() + ".map");
 		this.delay = delay;
-		this.offsetInHeight = offsetInHeight;
+		this.row = row;
 	}
 
 	public void animate(String name) {
@@ -50,7 +51,7 @@ public class Animator {
 	}
 
 	private SpriteGroup getGroupByName(String name) {
-		for (SpriteGroup group : spriteSheet.getSpriteMap().getGroups()) {
+		for (SpriteGroup group : spriteMap.getGroups()) {
 			if (group.getName().equals(name)) {
 				return group;
 			}
@@ -63,7 +64,7 @@ public class Animator {
 	}
 
 	public Vec2 getOffset() {
-		return new Vec2(currentOffset, offsetInHeight);
+		return new Vec2(currentOffset, row);
 	}
 
 }

@@ -13,4 +13,8 @@ public class OrthographicProjection extends Projection {
 		));
 	}
 
+	public OrthographicProjection(float left, float right, float bottom, float top, float near, float far) {
+		super(Mat.orthographic(left, right, bottom, top, near, far));
+	}
+
 }
