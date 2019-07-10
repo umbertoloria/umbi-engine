@@ -1,6 +1,7 @@
 package tests.platform.level;
 
 import engine.Mesh;
+import engine.shaders.Shader;
 import graphics.maths.Mat;
 import graphics.maths.Vec2;
 import graphics.maths.Vec3;
@@ -12,6 +13,7 @@ public class Image {
 	private Vec2 scale;
 	private Mesh mesh = Mesh.quad;
 	private Texture texture;
+	private Shader shader = Shader.basic;
 
 	public Image(Texture texture, Vec3 pos, Vec2 scale) {
 		this.texture = texture;
@@ -29,6 +31,10 @@ public class Image {
 
 	public Mesh getMesh() {
 		return mesh;
+	}
+
+	public Shader getShader() {
+		return shader;
 	}
 
 }

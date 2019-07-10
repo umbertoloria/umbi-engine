@@ -1,14 +1,15 @@
 package phisics;
 
 import engine.Mesh;
-import engine.events.*;
+import engine.events.Event;
+import engine.shaders.Shader;
 import graphics.Color;
 import graphics.maths.Vec3;
 
 public class Player extends En3 {
 
 	public Player() {
-		super(Mesh.monkey, Color.blue);
+		super(Mesh.monkey, Shader.light, Color.blue);
 	}
 
 	private boolean wBtn, aBtn, sBtn, dBtn;
@@ -28,11 +29,11 @@ public class Player extends En3 {
 
 	public void update(float delta) {
 		if (xmotion != 0) {
-			rotation = rotation.add(new Vec3(0, -xmotion * delta, 0));
+			setRotation(getRotation().add(new Vec3(0, -xmotion * delta, 0)));
 			xmotion = 0;
 		}
 		if (ymotion != 0) {
-			rotation = rotation.add(new Vec3(-ymotion * delta, 0, 0));
+			setRotation(getRotation().add(new Vec3(-ymotion * delta, 0, 0)));
 			ymotion = 0;
 		}
 		if (wBtn ^ sBtn) {
@@ -66,7 +67,7 @@ public class Player extends En3 {
 				} else if (right > 0) {
 					angle -= direction * 45;
 				}
-				position = position.move(rotation.y + angle, direction * rotation.x, distance);
+				setPosition(getPosition().move(getRotation().y + angle, direction * getRotation().x, distance));
 			}
 		}
 	}

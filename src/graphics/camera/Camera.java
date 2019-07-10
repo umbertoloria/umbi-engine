@@ -2,31 +2,37 @@ package graphics.camera;
 
 import engine.structures.Renderable;
 import engine.structures.Updatable;
-import graphics.camera.projections.Projection;
 import graphics.maths.Mat;
+import graphics.maths.Vec3;
 
 public abstract class Camera implements Updatable {
 
-	private Projection projection;
+	public static final float NEAR = 0.0001f;
+	public static final float FAR = 1000;
 
-	float tx, ty, tz;
-	float rx, ry;
+	private float px, py, pz, rx, ry, rz;
+	private Mat viewMatrix, projectionMatrix, projectionViewMatrix;
 
-	Camera(float tx, float ty, float tz, float rx, float ry, Projection projection) {
-		this.tx = tx;
-		this.ty = ty;
-		this.tz = tz;
-		this.rx = rx;
-		this.ry = ry;
-		this.projection = projection;
+	public Camera(Mat projectionMatrix) {
+		this.projectionMatrix = projectionMatrix;
+		updateMatrices();
+	}
+
+	private void updateMatrices() {
+		viewMatrix = Mat.view(px, py, pz, rx, ry, rz);
+		projectionViewMatrix = projectionMatrix.multiply(viewMatrix);
 	}
 
 	public Mat getProjectionMatrix() {
-		return projection.getProjectionMatrix();
+		return projectionMatrix;
 	}
 
 	public Mat getViewMatrix() {
-		return Mat.view(tx, ty, tz, rx, ry, 0);
+		return viewMatrix;
+	}
+
+	public Mat getProjectionViewMatrix() {
+		return projectionViewMatrix;
 	}
 
 	public boolean canRender(Renderable r) {
@@ -34,8 +40,80 @@ public abstract class Camera implements Updatable {
 	}
 
 	public String toString() {
-		return String.format("POS: TX: %3.1f TY: %3.1f TZ: %3.1f;", tx, ty, tz) +
-				String.format(" ROT: RX: %3.1f RY: %3.1f", rx, ry);
+		return String.format("POS: TX: %3.1f TY: %3.1f TZ: %3.1f;", px, py, pz) +
+				String.format(" ROT: RX: %3.1f RY: %3.1f RZ: %3.1f", rx, ry, rz);
+	}
+
+	// UTILS
+
+	public void setPosition(float x, float y, float z) {
+		px = x;
+		py = y;
+		pz = z;
+		updateMatrices();
+	}
+
+	public void setPosition(Vec3 p) {
+		setPosition(p.x, p.y, p.z);
+	}
+
+	public void setRotation(float x, float y, float z) {
+		rx = x;
+		ry = y;
+		rz = z;
+		updateMatrices();
+	}
+
+	public void setRotation(Vec3 r) {
+		setRotation(r.x, r.y, r.z);
+	}
+
+	public float getPx() {
+		return px;
+	}
+
+	public void setPx(float px) {
+		this.px = px;
+	}
+
+	public float getPy() {
+		return py;
+	}
+
+	public void setPy(float py) {
+		this.py = py;
+	}
+
+	public float getPz() {
+		return pz;
+	}
+
+	public void setPz(float pz) {
+		this.pz = pz;
+	}
+
+	public float getRx() {
+		return rx;
+	}
+
+	public void setRx(float rx) {
+		this.rx = rx;
+	}
+
+	public float getRy() {
+		return ry;
+	}
+
+	public void setRy(float ry) {
+		this.ry = ry;
+	}
+
+	public float getRz() {
+		return rz;
+	}
+
+	public void setRz(float rz) {
+		this.rz = rz;
 	}
 
 }

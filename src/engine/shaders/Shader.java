@@ -8,10 +8,11 @@ import graphics.textures.Texture;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 import static org.lwjgl.opengl.GL20.*;
 
-public abstract class Shader {
+public class Shader {
 
 	public static final int POSITION_LOC = 0;
 	public static final int TEXTURE_COORDINATE_LOC = 1;
@@ -20,9 +21,9 @@ public abstract class Shader {
 	public static Shader basic, light, gbutton;
 
 	public static void loadAll() {
-		basic = new BasicShader();
-		light = new LightShader();
-		gbutton = new GButtonShader();
+		basic = Shader.load("texture.frag");
+		light = Shader.load("light.frag");
+		gbutton = Shader.load("gbutton.frag");
 	}
 
 	public static void cleanAll() {
@@ -34,8 +35,52 @@ public abstract class Shader {
 
 	private Map<String, Integer> locationCache = new HashMap<>();
 
-	Shader(String shader) {
-		program = ShaderUtils.load(shader);
+	private static Shader load(String file) {
+		Scanner s = new Scanner(Shader.class.getResourceAsStream(file));
+		String line;
+
+		StringBuilder vert = new StringBuilder();
+		while (s.hasNextLine()) {
+			line = s.nextLine();
+			if (line.equals("// ---___---___--- //")) {
+				break;
+			}
+			vert.append(line);
+			vert.append('\n');
+		}
+
+		StringBuilder frag = new StringBuilder();
+		while (s.hasNextLine()) {
+			frag.append(s.nextLine());
+			frag.append('\n');
+		}
+
+		return new Shader(vert.toString(), frag.toString());
+	}
+
+	public Shader(String vertexShader, String fragmentShader) {
+		int program = glCreateProgram();
+		int vertID = glCreateShader(GL_VERTEX_SHADER);
+		int fragID = glCreateShader(GL_FRAGMENT_SHADER);
+		glShaderSource(vertID, vertexShader);
+		glShaderSource(fragID, fragmentShader);
+		glCompileShader(vertID);
+		if (glGetShaderi(vertID, GL_COMPILE_STATUS) == GL_FALSE) {
+			System.err.println("ODDEOOOOOO");
+			throw new IllegalStateException("Invalid vertex shader: " + glGetShaderInfoLog(vertID));
+		}
+		glCompileShader(fragID);
+		if (glGetShaderi(fragID, GL_COMPILE_STATUS) == GL_FALSE) {
+			System.err.println("ODDEOOOOOO");
+			throw new IllegalStateException("Invalid fragment shader: " + glGetShaderInfoLog(fragID));
+		}
+		glAttachShader(program, vertID);
+		glAttachShader(program, fragID);
+		glLinkProgram(program);
+		glValidateProgram(program);
+		glDeleteShader(vertID);
+		glDeleteShader(fragID);
+		this.program = program;
 	}
 
 	private int getUniform(String name) {
@@ -71,16 +116,8 @@ public abstract class Shader {
 		glUniform1i(getUniform(name), texture.getSlot());
 	}
 
-	public void setUniformInt(String name, int v) {
-		glUniform1i(getUniform(name), v);
-	}
-
 	public void enable() {
 		glUseProgram(program);
-	}
-
-	public void disable() {
-		glUseProgram(0);
 	}
 
 	private void destroy() {

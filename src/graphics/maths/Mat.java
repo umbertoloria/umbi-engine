@@ -10,6 +10,12 @@ public class Mat {
 		m.get(elements);
 	}
 
+	public Mat multiply(Mat o) {
+		Matrix4f a = new Matrix4f().set(this.elements);
+		Matrix4f b = new Matrix4f().set(o.elements);
+		return new Mat(a.mul(b));
+	}
+
 	public static Mat orthographic(float left, float right, float bottom, float top, float near, float far) {
 		Matrix4f result = new Matrix4f();
 		result = result.ortho(left, right, bottom, top, near, far);
@@ -24,21 +30,22 @@ public class Mat {
 
 	public static Mat model(float tx, float ty, float tz, float rx, float ry, float rz, float sx, float sy, float sz) {
 		Matrix4f model = new Matrix4f();
-		model.translate(tx, ty, tz);
-		model.rotateY((float) Math.toRadians(ry));
-		model.rotateX((float) Math.toRadians(rx));
-		model.rotateZ((float) Math.toRadians(rz));
-		model.scale(sx, sy, sz);
+		model = model.mul(new Matrix4f().translate(tx, ty, tz));
+		model = model.mul(new Matrix4f().rotateX((float) Math.toRadians(rx)));
+		model = model.mul(new Matrix4f().rotateY((float) Math.toRadians(ry)));
+		model = model.mul(new Matrix4f().rotateZ((float) Math.toRadians(rz)));
+		model = model.mul(new Matrix4f().scale(sx, sy, sz));
 		return new Mat(model);
 	}
 
 	public static Mat view(float tx, float ty, float tz, float rx, float ry, float rz) {
-		Matrix4f m = new Matrix4f();
-		m.rotateX((float) Math.toRadians(-rx));
-		m.rotateY((float) Math.toRadians(-ry));
-		m.rotateZ((float) Math.toRadians(-rz));
-		m.translate(-tx, -ty, -tz);
-		return new Mat(m);
+		Matrix4f view = new Matrix4f();
+		view = view.mul(new Matrix4f().translate(tx, ty, tz));
+		view = view.mul(new Matrix4f().rotateY((float) Math.toRadians(ry)));
+		view = view.mul(new Matrix4f().rotateX((float) Math.toRadians(rx)));
+		view = view.mul(new Matrix4f().rotateZ((float) Math.toRadians(rz)));
+		view = view.invert();
+		return new Mat(view);
 	}
 
 	public float[] toArray() {

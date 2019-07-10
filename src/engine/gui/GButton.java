@@ -29,14 +29,12 @@ public class GButton extends GComponent {
 	public void render(Camera camera) {
 		shader.enable();
 		shader.setUniformMat4f("model", getModelMatrix());
-		shader.setUniformMat4f("view", camera.getViewMatrix());
-		shader.setUniformMat4f("projection", camera.getProjectionMatrix());
+		shader.setUniformMat4f("projectionView", camera.getProjectionViewMatrix());
 		shader.setUniformColor("color", border);
 		mesh.render();
 		shader.setUniformMat4f("model", getInnerModelMatrix());
 		shader.setUniformColor("color", color);
 		mesh.render();
-		shader.disable();
 	}
 
 	public void update(float delta) {

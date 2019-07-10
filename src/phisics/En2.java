@@ -1,19 +1,24 @@
 package phisics;
 
 import engine.Mesh;
+import engine.shaders.Shader;
+import engine.structures.Renderable;
 import graphics.maths.Mat;
 import graphics.maths.Vec2;
 import graphics.maths.Vec3;
 import graphics.textures.Animator;
 
-public class En2 extends En {
+public class En2 implements Renderable {
 
 	private Mesh mesh = Mesh.quad;
+	private Vec3 position = new Vec3(0, 0, 0);
 	private Vec3 rotation = new Vec3(0, 0, 0);
 	private Vec2 scale = new Vec2(1, 1);
 	private Animator animator;
+	private Shader shader;
 
-	public En2(Animator animator) {
+	public En2(Shader shader, Animator animator) {
+		this.shader = shader;
 		this.animator = animator;
 	}
 
@@ -67,6 +72,10 @@ public class En2 extends En {
 
 	public final void setRotation(float rx, float ry, float rz) {
 		rotation = new Vec3(rx, ry, rz);
+	}
+
+	public Shader getShader() {
+		return shader;
 	}
 
 }

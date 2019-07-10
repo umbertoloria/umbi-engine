@@ -3,10 +3,8 @@ package tests.platform;
 import engine.Renderer;
 import engine.events.Event;
 import engine.layer.Layer;
-import engine.shaders.Shader;
 import graphics.camera.Camera;
 import graphics.camera.FlatCamera;
-import graphics.camera.IdleCamera;
 import tests.platform.level.Background;
 import tests.platform.level.Pavement;
 import tests.platform.physics.PhysicsMachine;
@@ -50,7 +48,6 @@ public class Platform extends Layer {
 
 	public void onRender(Renderer renderer) {
 		renderer.use(camera);
-		renderer.use(Shader.basic);
 		renderer.draw(background);
 		for (Pavement pavement : pavements) {
 			renderer.draw(pavement);

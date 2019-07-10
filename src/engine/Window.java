@@ -1,6 +1,5 @@
 package engine;
 
-import engine.GameEngine;
 import engine.events.Event;
 import engine.inputs.Input;
 import org.lwjgl.glfw.GLFWErrorCallback;

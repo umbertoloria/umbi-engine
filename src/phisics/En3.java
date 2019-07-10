@@ -1,37 +1,26 @@
 package phisics;
 
 import engine.Mesh;
+import engine.shaders.Shader;
+import engine.structures.Renderable;
 import graphics.Color;
 import graphics.maths.Mat;
 import graphics.maths.Vec3;
 
-public class En3 extends En {
+public class En3 implements Renderable {
 
 	private Mesh mesh;
-	Vec3 rotation = new Vec3(0, 0, 0);
+	private Vec3 position = new Vec3(0, 0, 0);
+	private Vec3 rotation = new Vec3(0, 0, 0);
 	private Vec3 scale = new Vec3(1, 1, 1);
 	private Color color;
+	private Shader shader;
 
-	public En3(Mesh mesh, Color color) {
+	public En3(Mesh mesh, Shader shader, Color color) {
 		this.mesh = mesh;
+		this.shader = shader;
 		this.color = color;
 	}
-
-//	public final void render(Camera camera, Light light) {
-//		if (camera.canRender(this)) {
-//			shader.enable();
-//			shader.setUniformMat4f("model", getModelMatrix());
-//			shader.setUniformMat4f("view", camera.getViewMatrix());
-//			shader.setUniformMat4f("projection", camera.getProjectionMatrix());
-//			shader.setUniformColor("object_color", color);
-//			if (light != null) {
-//				shader.setUniformVec3("light_position", light.getPosition());
-//				shader.setUniformColor("light_color", light.getColor());
-//			}
-//			mesh.render();
-//			shader.disable();
-//		}
-//	}
 
 	public Mat getModelMatrix() {
 		return Mat.model(
@@ -53,20 +42,28 @@ public class En3 extends En {
 		position = new Vec3(x, y, z);
 	}
 
+	public final void setPosition(Vec3 position) {
+		this.position = position;
+	}
+
+	public final Vec3 getRotation() {
+		return rotation;
+	}
+
+	public final void setRotation(Vec3 rotation) {
+		this.rotation = rotation;
+	}
+
 	public final void setScale(float value) {
 		scale = new Vec3(value, value, value);
 	}
 
-	public final float getPitch() {
-		return rotation.x;
-	}
-
-	public final float getYaw() {
-		return rotation.y;
-	}
-
 	public Color getColor() {
 		return color;
+	}
+
+	public Shader getShader() {
+		return shader;
 	}
 
 }

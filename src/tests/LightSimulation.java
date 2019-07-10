@@ -44,7 +44,7 @@ public class LightSimulation extends Layer {
 						x / 50f * (-(z + 1) / 9f) * .8f + .2f * r.nextFloat(),
 						-(z + 1) / 9f
 				);
-				En3 e = new En3(Mesh.cube, c);
+				En3 e = new En3(Mesh.cube, Shader.light, c);
 				e.setPosition(x * size, 0, z * size);
 				e.setScale(size);
 				ents.add(e);
@@ -58,7 +58,7 @@ public class LightSimulation extends Layer {
 		light.update(delta);
 		while (sps > 0) {
 			Mesh mmm = r.nextBoolean() ? Mesh.cone : Mesh.sphere;
-			En3 a = new En3(mmm, new Color());
+			En3 a = new En3(mmm, Shader.light, new Color());
 			a.setPosition(r.nextInt(100), 0, -r.nextInt(40));
 			a.setScale(2);
 			ents.add(a);
@@ -76,7 +76,6 @@ public class LightSimulation extends Layer {
 	public void onRender(Renderer renderer) {
 		renderer.use(camera);
 		renderer.use(light);
-		renderer.use(Shader.light);
 		renderer.draw(scimmia);
 		renderer.draw(light);
 		for (En3 ent : ents) {

@@ -27,14 +27,6 @@ public final class Vec2 {
 		return new Vec2(x * scalar, y * scalar);
 	}
 
-//	public float x() {
-//		return x;
-//	}
-//
-//	public float y() {
-//		return y;
-//	}
-
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;

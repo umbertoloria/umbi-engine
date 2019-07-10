@@ -1,7 +1,8 @@
 package graphics.camera;
 
+import engine.GameEngine;
 import engine.structures.Renderable;
-import graphics.camera.projections.PerspectiveProjection;
+import graphics.maths.Mat;
 import phisics.En3;
 
 public class HatCamera extends Camera {
@@ -9,7 +10,7 @@ public class HatCamera extends Camera {
 	private En3 e;
 
 	public HatCamera(En3 e) {
-		super(0, 0, 0, 0, 0, new PerspectiveProjection(100));
+		super(Mat.perspective(55, GameEngine.PROPS, Camera.NEAR, Camera.FAR));
 		this.e = e;
 	}
 
@@ -18,11 +19,8 @@ public class HatCamera extends Camera {
 	}
 
 	public void update(float delta) {
-		tx = e.getPosition().x;
-		ty = e.getPosition().y;
-		tz = e.getPosition().z;
-		rx = e.getPitch();
-		ry = e.getYaw();
+		setPosition(e.getPosition());
+		setRotation(e.getRotation());
 	}
 
 }

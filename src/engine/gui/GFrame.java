@@ -4,6 +4,7 @@ import engine.Mesh;
 import engine.Renderer;
 import engine.events.Event;
 import engine.layer.Layer;
+import engine.shaders.Shader;
 import graphics.camera.Camera;
 import graphics.camera.FlatCamera;
 import graphics.maths.Quad;
@@ -53,7 +54,7 @@ public abstract class GFrame extends Layer {
 			for (GComponent component : components) {
 				renderer.draw(component);
 			}
-			renderer.draw(mouseCursor.getModelMatrix(), mouseCursor.getSpriteSheet(), Mesh.quad);
+			renderer.draw(Shader.basic, mouseCursor.getModelMatrix(), mouseCursor.getSpriteSheet(), Mesh.quad);
 			renderer.enableDepth();
 		}
 	}

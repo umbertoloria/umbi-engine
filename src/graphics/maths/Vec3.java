@@ -4,10 +4,10 @@ public final class Vec3 {
 
 	public final float x, y, z;
 
-	public Vec3(float sx, float sy, float sz) {
-		x = sx;
-		y = sy;
-		z = sz;
+	public Vec3(float x, float y, float z) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
 	}
 
 	public Vec3 move(float no, float si, float distanza) {
@@ -28,18 +28,6 @@ public final class Vec3 {
 	public Vec3 add(Vec3 add) {
 		return new Vec3(x + add.x, y + add.y, z + add.z);
 	}
-
-//	public float x() {
-//		return x;
-//	}
-//
-//	public float y() {
-//		return y;
-//	}
-//
-//	public float z() {
-//		return z;
-//	}
 
 	public boolean equals(Object o) {
 		if (this == o) return true;

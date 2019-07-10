@@ -1,12 +1,15 @@
 package graphics.camera;
 
+import engine.GameEngine;
 import engine.events.Event;
-import graphics.camera.projections.PerspectiveProjection;
+import graphics.maths.Mat;
 
 public class IdleCamera extends Camera {
 
 	public IdleCamera(float x, float y, float z, float pitch, float yaw) {
-		super(x, y, z, pitch, yaw, new PerspectiveProjection(60));
+		super(Mat.perspective(60, GameEngine.PROPS, Camera.NEAR, Camera.FAR));
+		setPosition(x, y, z);
+		setRotation(pitch, yaw, 0);
 	}
 
 	private static final float ROT_SPEED = 100f;
@@ -16,24 +19,24 @@ public class IdleCamera extends Camera {
 		if (upBtn || downBtn || leftBtn || rightBtn || spaceBtn || shiftBtn) {
 			// Precessione
 			if (upBtn) {
-				rx += delta * ROT_SPEED;
+				setRx(getRx() + delta * ROT_SPEED);
 			}
 			if (downBtn) {
-				rx -= delta * ROT_SPEED;
+				setRx(getRx() - delta * ROT_SPEED);
 			}
 			// Nutazione
 			if (leftBtn) {
-				ry += delta * ROT_SPEED;
+				setRy(getRy() + delta * ROT_SPEED);
 			}
 			if (rightBtn) {
-				ry -= delta * ROT_SPEED;
+				setRy(getRy() - delta * ROT_SPEED);
 			}
 			// Traslazione ordinate
 			if (spaceBtn) {
-				ty += delta * MOV_SPEED;
+				setPy(getPy() + delta * MOV_SPEED);
 			}
 			if (shiftBtn) {
-				ty -= delta * MOV_SPEED;
+				setPy(getPy() - delta * MOV_SPEED);
 			}
 		}
 	}
